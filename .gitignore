@@ -1,0 +1,8 @@
+# Ignore the .idea folder created by IntelliJ
+.idea
+
+# Ignore compiled java files
+*.class
+*.jar
+bin
+out
