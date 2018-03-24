@@ -8,6 +8,8 @@ import java.util.Set;
  *
  * class
  *
+ * By design choice, this class shall represent a directed graph.
+ *
  * A graph contains a set of edges and nodes. This class represents a node.
  *  http://mathworld.wolfram.com/Graph.html
  *
@@ -21,5 +23,45 @@ public class Graph<E extends Edge, N extends Node> extends Entity {
 
     public Graph(String _id) {
         super(_id);
+    }
+
+    /**
+     * addNode()
+     *
+     * adds a node to this graph
+     *
+     * @param node the node to add to this graph
+     */
+    public void addNode(N node) {
+        nodes.add(node);
+    }
+
+    /**
+     * addEdge()
+     *
+     * adds to edge to this graph
+     *
+     * @param edge the edge to add to this graph
+     */
+    public void addEdge(E edge) {
+        edges.add(edge);
+    }
+
+    /**
+     * getEdges()
+     *
+     * @return a Set representing the edges of this graph
+     */
+    public Set<E> getEdges() {
+        return edges;
+    }
+
+    /**
+     * getNodes()
+     *
+     * @return a Set representing the nodes of this graph
+     */
+    public Set<N> getNodes() {
+        return nodes;
     }
 }
