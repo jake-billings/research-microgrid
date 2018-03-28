@@ -20,33 +20,13 @@ import java.util.Set;
  * @author Jake Billings
  */
 public class Graph<E extends Edge, N extends Node> extends Entity {
-    private Set<E> edges = new HashSet<E>();
-    private Set<N> nodes = new HashSet<N>();
+    private final Set<E> edges;
+    private final Set<N> nodes;
 
-    public Graph(String _id) {
+    public Graph(String _id, Set<E> edges, Set<N> nodes) {
         super(_id);
-    }
-
-    /**
-     * addNode()
-     *
-     * adds a node to this graph
-     *
-     * @param node the node to add to this graph
-     */
-    public void addNode(N node) {
-        nodes.add(node);
-    }
-
-    /**
-     * addEdge()
-     *
-     * adds to edge to this graph
-     *
-     * @param edge the edge to add to this graph
-     */
-    public void addEdge(E edge) {
-        edges.add(edge);
+        this.edges = edges;
+        this.nodes = nodes;
     }
 
     /**
