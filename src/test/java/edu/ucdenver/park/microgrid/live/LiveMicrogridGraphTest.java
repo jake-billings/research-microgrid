@@ -4,8 +4,6 @@ import edu.ucdenver.park.microgrid.data.MicrogridGraph;
 import edu.ucdenver.park.microgrid.dummy.DummyMicrogrid;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class LiveMicrogridGraphTest {
     @Test
     void shouldStartWithEmptyState() {

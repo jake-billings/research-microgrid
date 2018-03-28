@@ -1,6 +1,8 @@
 package edu.ucdenver.park.microgrid.launchers;
 
 import edu.ucdenver.park.microgrid.dummy.DummyMicrogrid;
+import edu.ucdenver.park.microgrid.live.LiveMicrogridGraph;
+import edu.ucdenver.park.microgrid.live.MicrogridGraphMessage;
 import edu.ucdenver.park.microgrid.socketioserver.MicrogridSocketIOServer;
 
 /**
@@ -14,7 +16,9 @@ import edu.ucdenver.park.microgrid.socketioserver.MicrogridSocketIOServer;
  */
 public class ServerLauncher {
     public static void main(String[] args) {
-        MicrogridSocketIOServer server = new MicrogridSocketIOServer(new DummyMicrogrid(), (short) 3006);
+        LiveMicrogridGraph live = new LiveMicrogridGraph();
+        MicrogridSocketIOServer server = new MicrogridSocketIOServer(live, (short) 3006);
         server.init();
+        live.receiveMessage(new MicrogridGraphMessage(new DummyMicrogrid(), System.currentTimeMillis()+60000));
     }
 }

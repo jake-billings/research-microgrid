@@ -5,6 +5,10 @@ import com.corundumstudio.socketio.listener.*;
 import com.corundumstudio.socketio.protocol.JacksonJsonSupport;
 import com.corundumstudio.socketio.protocol.JsonSupport;
 import edu.ucdenver.park.microgrid.data.MicrogridGraph;
+import edu.ucdenver.park.microgrid.data.abs.Datum;
+import edu.ucdenver.park.microgrid.live.DatumHandler;
+import edu.ucdenver.park.microgrid.live.LiveMicrogridGraph;
+import edu.ucdenver.park.microgrid.live.MicrogridGraphHandler;
 import edu.ucdenver.park.microgrid.socketioserver.serializers.MicrogridJacksonModule;
 
 /**
@@ -26,10 +30,10 @@ import edu.ucdenver.park.microgrid.socketioserver.serializers.MicrogridJacksonMo
  *   objects before sending the to the javascript frontend via the socket.io protocol.
  */
 public class MicrogridSocketIOServer {
-    final MicrogridGraph grid;
+    final LiveMicrogridGraph grid;
     final short port;
 
-    public MicrogridSocketIOServer(MicrogridGraph grid, short port) {
+    public MicrogridSocketIOServer(LiveMicrogridGraph grid, short port) {
         this.grid = grid;
         this.port = port;
     }
@@ -66,7 +70,27 @@ public class MicrogridSocketIOServer {
         // the "grid" event contains the grid graph data from this.grid (see MicrogridGraph)
         server.addConnectListener(new ConnectListener() {
             public void onConnect(SocketIOClient client) {
-                client.sendEvent("grid", grid);
+                client.sendEvent("grid", grid.getCurrentState());
+            }
+        });
+
+        //---LiveMicrogridGraph Handlers---
+        // When we receive data from agents, broadcast it via socket.io
+
+        //Event: datum
+        // when we receive an element from the data stream
+        grid.registerDatumHadler(new DatumHandler() {
+            @Override
+            public void onDatum(Datum datum) {
+                server.getBroadcastOperations().sendEvent("datum", datum);
+            }
+        });
+        //Event: grid
+        // when the grid is updated, send the update to the frontend
+        grid.registerMicrogridGraphHadler(new MicrogridGraphHandler() {
+            @Override
+            public void onMicrogridGraph(MicrogridGraph graph) {
+                server.getBroadcastOperations().sendEvent("grid", graph);
             }
         });
 
@@ -87,7 +111,7 @@ public class MicrogridSocketIOServer {
 
     //----Getters----
     // there are only getters; not setters because this object is intended to be nearly immutable
-    public MicrogridGraph getGrid() {
+    public LiveMicrogridGraph getGrid() {
         return grid;
     }
     public short getPort() {
