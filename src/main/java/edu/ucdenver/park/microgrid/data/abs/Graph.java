@@ -46,4 +46,28 @@ public class Graph<E extends Edge, N extends Node> extends Entity {
     public Set<N> getNodes() {
         return nodes;
     }
+
+    /**
+     * union()
+     *
+     * method
+     *
+     * graph operation
+     *
+     * returns a new Graph object that is the mathematical union of this graph with the graph other
+     *  two new node and edge sets are created and populated with the contents of both graph's nodes and edges
+     *
+     * @param newId the new graph must have a unique _id, since everything is an Entity. This is the _id we give the new object
+     * @param other the other graph object to union with this one
+     * @returns a new Graph object that is the mathematical union of this graph with the graph other
+     */
+    public Graph<E, N> union(String newId, Graph<E, N> other) {
+        Set<E> edges = new HashSet<E>();
+        edges.addAll(this.getEdges());
+        edges.addAll(other.getEdges());
+        Set<N> nodes = new HashSet<N>();
+        nodes.addAll(this.getNodes());
+        nodes.addAll(other.getNodes());
+        return new Graph<E, N>(newId, edges, nodes);
+    }
 }
