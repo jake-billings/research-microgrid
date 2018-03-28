@@ -12,6 +12,7 @@ Each data structure is abstracted in the "abs" package such that the code could 
 2. Sent via JADE to Receiver Agent
 3. Sent from Receiver Agent to Frontend Client via Socket.io
 
+![JUnit Run Config](docs/screenshots/simplifiedDataFlow.png)
 
 ## Setup Javascript Frontend
 1. `cd src/main/resources/frontend`
