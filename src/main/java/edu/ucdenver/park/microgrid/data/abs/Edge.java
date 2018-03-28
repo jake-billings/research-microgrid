@@ -26,6 +26,7 @@ public class Edge<N extends Node> extends Entity {
      * from
      *
      * N
+
      *
      * the node this edge is from
      */
@@ -35,5 +36,13 @@ public class Edge<N extends Node> extends Entity {
         super(_id);
         this.to = to;
         this.from = from;
+    }
+
+    public N getTo() {
+        return to;
+    }
+
+    public N getFrom() {
+        return from;
     }
 }
