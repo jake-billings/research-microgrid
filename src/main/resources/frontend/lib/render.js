@@ -62,7 +62,13 @@
             nodes: nodes,
             edges: edges
         };
-        var options = {};
+        var options = {
+            layout: {
+                hierarchical: {
+                    sortMethod: 'directed'
+                }
+            }
+        };
         var network = new vis.Network(target, data, options);
 
         client.on('grid', function (grid) {
@@ -83,7 +89,8 @@
                 return {
                     from: edge.from,
                     to: edge.to,
-                    label: edge._id
+                    label: edge._id,
+                    arrows: 'to'
                 }
             }));
         });
