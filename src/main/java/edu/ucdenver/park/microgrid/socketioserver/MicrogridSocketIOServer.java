@@ -30,8 +30,8 @@ import edu.ucdenver.park.microgrid.socketioserver.serializers.MicrogridJacksonMo
  *   objects before sending the to the javascript frontend via the socket.io protocol.
  */
 public class MicrogridSocketIOServer {
-    final LiveMicrogridGraph grid;
-    final short port;
+    private final LiveMicrogridGraph grid;
+    private final short port;
 
     public MicrogridSocketIOServer(LiveMicrogridGraph grid, short port) {
         this.grid = grid;
@@ -80,7 +80,6 @@ public class MicrogridSocketIOServer {
         //Event: datum
         // when we receive an element from the data stream
         grid.registerDatumHadler(new DatumHandler() {
-            @Override
             public void onDatum(Datum datum) {
                 server.getBroadcastOperations().sendEvent("datum", datum);
             }
@@ -88,7 +87,6 @@ public class MicrogridSocketIOServer {
         //Event: grid
         // when the grid is updated, send the update to the frontend
         grid.registerMicrogridGraphHadler(new MicrogridGraphHandler() {
-            @Override
             public void onMicrogridGraph(MicrogridGraph graph) {
                 server.getBroadcastOperations().sendEvent("grid", graph);
             }
