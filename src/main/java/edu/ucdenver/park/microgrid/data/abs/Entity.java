@@ -36,7 +36,8 @@ public abstract class Entity implements Serializable {
      * @param _id a uniuqe string _id for this entity
      */
     public Entity(String _id) {
-
+        if (_id == null) throw new IllegalArgumentException("_id must not be null when instantiation an entity");
+        if (_id.equals("")) throw new IllegalArgumentException("_id must not be empty string when instantiation an entity");
         this._id = _id;
     }
 

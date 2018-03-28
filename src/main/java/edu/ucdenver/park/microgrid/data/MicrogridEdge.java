@@ -27,6 +27,7 @@ public class MicrogridEdge extends Edge<MicrogridNode> {
 
     public MicrogridEdge(String _id, MicrogridNode to, MicrogridNode from, MicrogridEdgeType microgridEdgeType) {
         super(_id, to, from);
+        if (microgridEdgeType == null) throw new IllegalArgumentException("microgridEdgeType cannot be null when creating a MicrogridEdge");
         this.microgridEdgeType = microgridEdgeType;
     }
 

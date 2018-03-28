@@ -15,7 +15,6 @@ package edu.ucdenver.park.microgrid.data.abs;
  * @author Jake Billings
  */
 public class Node extends Entity {
-
     public Node(String _id) {
         super(_id);
     }

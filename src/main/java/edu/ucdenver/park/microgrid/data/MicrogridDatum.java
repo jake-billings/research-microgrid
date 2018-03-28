@@ -34,6 +34,7 @@ public class MicrogridDatum extends Datum {
 
     public MicrogridDatum(String _id, long timestamp, MicrogridNode node) {
         super(_id, timestamp);
+        if (node == null) throw new IllegalArgumentException("node cannot be null when creating a MicrogridDatum");
         this.node = node;
     }
 

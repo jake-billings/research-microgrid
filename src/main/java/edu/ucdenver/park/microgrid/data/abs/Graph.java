@@ -31,6 +31,8 @@ public class Graph<E extends Edge, N extends Node> extends Entity {
 
     public Graph(String _id, Set<E> edges, Set<N> nodes) {
         super(_id);
+        if (edges == null) throw new IllegalArgumentException("edges cannot be null when creating a graph");
+        if (nodes == null) throw new IllegalArgumentException("nodes cannot be null when creating a graph");
         this.edges = edges;
         this.nodes = nodes;
     }

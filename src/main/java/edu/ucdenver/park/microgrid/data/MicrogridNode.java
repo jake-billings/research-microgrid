@@ -26,6 +26,7 @@ public class MicrogridNode extends Node {
 
     public MicrogridNode(String _id, MicrogridNodeType microgridNodeType) {
         super(_id);
+        if (microgridNodeType == null) throw new IllegalArgumentException("microgridNodeType cannot be null when creating a MicrogridNode");
         this.microgridNodeType = microgridNodeType;
     }
 

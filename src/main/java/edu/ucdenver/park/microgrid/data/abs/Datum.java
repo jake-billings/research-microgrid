@@ -36,6 +36,7 @@ public abstract class Datum extends Entity {
 
     public Datum(String _id, long timestamp) {
         super(_id);
+        if (timestamp < 0) throw new IllegalArgumentException("timestamp must be positive when instantiating Datum object");
         this.timestamp = timestamp;
     }
 }

@@ -64,10 +64,13 @@ public abstract class MicrogridSenderAgent extends Agent {
      * @param receiver         the agent id (AID) of the MicrogridReceiverAgent that should receive our graph data messages
      * @param subgraph         the subgraph (subgraph of the entire grid) that this agent knows about (should be statically configured in the constructor of a subclass)
      * @param gridUpdatePeriod the time in milliseconds between each message we send to update the grid graph data on the map (this is also the amount of time roughly it will take for us to disappear from the map when shutdown)
+     *                         cannot be less than 1000 ms (to preserve network bandwidth)
      */
     public MicrogridSenderAgent(AID receiver, MicrogridGraph subgraph, long gridUpdatePeriod) {
-        this.receiver = receiver;
         this.setSubgraph(subgraph);
+        if (receiver == null) throw new IllegalArgumentException("receiver cannot be null when creating MicrogridSenderAgent");
+        if (gridUpdatePeriod < 1000) throw new IllegalArgumentException("gridUpdatePeriod cannot be less than 1000 when creating MicrogridSenderAgent");
+        this.receiver = receiver;
         this.gridUpdatePeriod = gridUpdatePeriod;
     }
 

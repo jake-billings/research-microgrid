@@ -36,6 +36,8 @@ public class Edge<N extends Node> extends Entity {
 
     public Edge(String _id, N to, N from) {
         super(_id);
+        if (to == null) throw new IllegalArgumentException("to cannot be null when creating an edge");
+        if (from == null) throw new IllegalArgumentException("to cannot be null when creating an edge");
         this.to = to;
         this.from = from;
     }
