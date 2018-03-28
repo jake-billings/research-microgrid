@@ -2,6 +2,7 @@ package edu.ucdenver.park.microgrid.data;
 
 import edu.ucdenver.park.microgrid.data.abs.Graph;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,6 +15,9 @@ import java.util.Set;
  * subclass of Edge with microgrid-specific data
  */
 public class MicrogridGraph extends Graph<MicrogridEdge, MicrogridNode> {
+    public MicrogridGraph(String _id) {
+        super(_id, new HashSet<MicrogridEdge>(), new HashSet<MicrogridNode>());
+    }
     public MicrogridGraph(String _id, Set<MicrogridEdge> edges, Set<MicrogridNode> nodes) {
         super(_id, edges, nodes);
     }
@@ -28,6 +32,7 @@ public class MicrogridGraph extends Graph<MicrogridEdge, MicrogridNode> {
      * @returns a new Graph object that is the mathematical union of this graph with the graph other
      */
     public MicrogridGraph union(String newId, MicrogridGraph other) {
-        return (MicrogridGraph) super.union(newId, other);
+        Graph rawUnion = super.union(newId, other);
+        return new MicrogridGraph(newId, (Set<MicrogridEdge>) rawUnion.getEdges(), (Set<MicrogridNode>) rawUnion.getNodes()) ;
     }
 }

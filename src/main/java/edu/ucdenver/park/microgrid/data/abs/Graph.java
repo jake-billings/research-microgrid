@@ -23,6 +23,12 @@ public class Graph<E extends Edge, N extends Node> extends Entity {
     private final Set<E> edges;
     private final Set<N> nodes;
 
+    public Graph(String _id) {
+        super(_id);
+        this.edges = new HashSet<E>();
+        this.nodes = new HashSet<N>();
+    }
+
     public Graph(String _id, Set<E> edges, Set<N> nodes) {
         super(_id);
         this.edges = edges;
