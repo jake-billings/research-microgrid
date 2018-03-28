@@ -5,6 +5,8 @@ package edu.ucdenver.park.microgrid.data;
  *
  * abstract class
  *
+ * immutable
+ *
  * This class is intended to represent one reading at one point in time from one instrument. Depending on the final
  *  protocol implementation, packets may contain multiple instances of data. Packets might only contain one datum.
  *

@@ -5,6 +5,8 @@ import java.util.Objects;
 /**
  * Entity
  *
+ * immutable
+ *
  * All data objects for this project will have unique _ids. Objects should always be compared using these ids.
  *  I do not specify how to create this unique id or enforce its uniquness. However, the system will break if it
  *  is not unique for each object.

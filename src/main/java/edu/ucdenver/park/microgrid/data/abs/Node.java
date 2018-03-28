@@ -5,6 +5,8 @@ package edu.ucdenver.park.microgrid.data.abs;
  *
  * class
  *
+ * immutable
+ *
  * A graph contains a set of edges and nodes. This class represents a node.
  *  http://mathworld.wolfram.com/Graph.html
  *

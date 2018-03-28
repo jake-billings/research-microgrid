@@ -8,6 +8,8 @@ import java.util.Set;
  *
  * class
  *
+ * immutable
+ *
  * By design choice, this class shall represent a directed graph.
  *
  * A graph contains a set of edges and nodes. This class represents a node.

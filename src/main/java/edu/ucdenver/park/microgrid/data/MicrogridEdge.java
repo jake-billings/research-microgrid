@@ -7,6 +7,8 @@ import edu.ucdenver.park.microgrid.data.abs.Edge;
  *
  * class
  *
+ * immutable
+ *
  * subclass of Edge with microgrid-specific data
  */
 public class MicrogridEdge extends Edge<MicrogridNode> {

@@ -7,6 +7,8 @@ import edu.ucdenver.park.microgrid.data.abs.Graph;
  *
  * class
  *
+ * mutable
+ *
  * subclass of Edge with microgrid-specific data
  */
 public class MicrogridGraph extends Graph<MicrogridEdge, MicrogridNode> {

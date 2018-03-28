@@ -7,8 +7,24 @@ import edu.ucdenver.park.microgrid.data.abs.Edge;
 
 import java.io.IOException;
 
+/**
+ * EdgeSerializer
+ *
+ * class: serializer
+ *
+ * This class implements StdSerializer specifically for the Edge object. The default serializer didn't work because
+ *  each edge needs information from the to/from nodes. The default serializer did not provide this information, so
+ *  this class does.
+ *
+ * This serializer is part of the Microgrid Jackson module and used when sending edges to the client while serializing
+ *  graphs in the MicrogridSocketIOServer
+ *
+ * See Edge, MicrogridSocketIOServer
+ * See Jackson Serializers/Modules
+ * See JacksonJsonSupport
+ */
 public class EdgeSerializer extends StdSerializer<Edge> {
-    public EdgeSerializer(Class<Edge> t) {
+    EdgeSerializer(Class<Edge> t) {
         super(t);
     }
 
