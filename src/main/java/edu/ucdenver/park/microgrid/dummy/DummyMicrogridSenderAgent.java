@@ -2,6 +2,7 @@ package edu.ucdenver.park.microgrid.dummy;
 
 import edu.ucdenver.park.microgrid.agents.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.FloatMicrogridDatum;
+import edu.ucdenver.park.microgrid.data.MicrogridMeasurementType;
 import edu.ucdenver.park.microgrid.data.MicrogridNode;
 import jade.core.AID;
 import jade.core.behaviours.TickerBehaviour;
@@ -85,12 +86,14 @@ public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
                 sendDatum(
                         //Create a FloatMicrogridDatum object to hold the measurement
                         new FloatMicrogridDatum(
-                                //Generate a unique id relying on time and the uniqueness of the node id
-                                "datum-" + node.get_id() + '-' + System.currentTimeMillis(),
+                                //Generate a unique id relying on time and the uniqueness of the node id and measurement type
+                                "datum-" + node.get_id() + "-voltage-" + System.currentTimeMillis(),
                                 //Timestamp the datum with the current number of milliseconds from Jan 1st, 1970
-                                (long) System.currentTimeMillis(),
+                                System.currentTimeMillis(),
                                 //Tell the Datum which node measured it
                                 node,
+                                //Pretend we're measuring voltage
+                                MicrogridMeasurementType.VOLTAGE,
                                 //Provide a dummy value for the measurement
                                 15.0F));
             }

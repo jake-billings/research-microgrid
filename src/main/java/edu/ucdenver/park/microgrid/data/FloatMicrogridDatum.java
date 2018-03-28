@@ -27,8 +27,8 @@ public class FloatMicrogridDatum extends MicrogridDatum {
      */
     private final float value;
 
-    public FloatMicrogridDatum(String _id, long timestamp, MicrogridNode node, float value) {
-        super(_id, timestamp, node);
+    public FloatMicrogridDatum(String _id, long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType, float value) {
+        super(_id, timestamp, node, measurementType);
         this.value = value;
     }
 

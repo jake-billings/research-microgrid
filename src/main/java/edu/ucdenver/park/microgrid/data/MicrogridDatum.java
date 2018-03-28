@@ -32,13 +32,30 @@ public class MicrogridDatum extends Datum {
      */
     private final MicrogridNode node;
 
-    public MicrogridDatum(String _id, long timestamp, MicrogridNode node) {
+    /**
+     * measurementType
+     *
+     * MicrogridMeasurementType
+     *
+     * see the MicrogridMeasurementType docs
+     *
+     * this is the type of measurement made (e.g. Volts, Amps, Watts)
+     */
+    private final MicrogridMeasurementType measurementType;
+
+    public MicrogridDatum(String _id, long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType) {
         super(_id, timestamp);
         if (node == null) throw new IllegalArgumentException("node cannot be null when creating a MicrogridDatum");
+        if (measurementType == null) throw new IllegalArgumentException("measurementType cannot be null when creating a MicrogridDatum");
         this.node = node;
+        this.measurementType = measurementType;
     }
 
     public MicrogridNode getNode() {
         return node;
+    }
+
+    public MicrogridMeasurementType getMeasurementType() {
+        return measurementType;
     }
 }
