@@ -3,12 +3,13 @@ package edu.ucdenver.park.microgrid.socketioserver.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import edu.ucdenver.park.microgrid.data.MicrogridEdge;
 import edu.ucdenver.park.microgrid.data.abs.Edge;
 
 import java.io.IOException;
 
 /**
- * EdgeSerializer
+ * MicrogridEdgeSerializer
  *
  * class: serializer
  *
@@ -23,16 +24,17 @@ import java.io.IOException;
  * See Jackson Serializers/Modules
  * See JacksonJsonSupport
  */
-public class EdgeSerializer extends StdSerializer<Edge> {
-    EdgeSerializer(Class<Edge> t) {
+public class MicrogridEdgeSerializer extends StdSerializer<MicrogridEdge> {
+    MicrogridEdgeSerializer(Class<MicrogridEdge> t) {
         super(t);
     }
 
-    public void serialize(Edge edge, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(MicrogridEdge edge, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
         jsonGenerator.writeStringField("_id", edge.get_id());
         jsonGenerator.writeStringField("to", edge.getTo().get_id());
         jsonGenerator.writeStringField("from", edge.getFrom().get_id());
+        jsonGenerator.writeStringField("edgeType", edge.getMicrogridEdgeType().getName());
         jsonGenerator.writeEndObject();
     }
 }
