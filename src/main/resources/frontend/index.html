@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+
+    <link rel="stylesheet" href="lib/render.css">
+
+    <script src="node_modules/vis/dist/vis-network.min.js"></script>
+    <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script type="text/javascript">
+        var config = {
+            backendUrl: 'http://localhost:3006'
+        }
+    </script>
+    <script src="lib/client.js"></script>
+    <script src="lib/render.js"></script>
+</head>
+<body>
+
+<div id="grid" style="width:800px;height: 800px;"></div>
+<script type="text/javascript">
+    render.init(document.getElementById('grid'));
+</script>
+
+</body>
+</html>

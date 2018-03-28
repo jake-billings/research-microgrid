@@ -6,3 +6,8 @@
 *.jar
 bin
 out
+target
+**/node_modules
+
+#Ignore mac files
+.DS_Store
