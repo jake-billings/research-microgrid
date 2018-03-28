@@ -20,7 +20,7 @@ import edu.ucdenver.park.microgrid.socketioserver.serializers.MicrogridJacksonMo
  *  Socket.io is a protocol that runs over either http or websocket that enables event-based client-server realtime communication
  *  Socket.io is also a javascript library that implements this protocol. The JS library is used on the frontend. Since
  *   this code is in Java, we use yet another library to implement the protocol. That library is netty-socketio, which
- *   runs on top of netty.
+ *   runs on top of netty. Netty is a library for event-based processing on servers.
  *  Javascript uses a data format called JSON. It's easy to work with in javascript. It's kind of a pain in Java.
  *  Jackson is a Java library for encoding/decoding objects to/from JSON. netty-socketio uses Jackson to encode/decode
  *   objects before sending the to the javascript frontend via the socket.io protocol.
