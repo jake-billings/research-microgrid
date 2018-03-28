@@ -22,10 +22,6 @@ public class TestSenderAgent extends Agent {
         //---Welcome Message---
         //Print a message that says the agent is starting
         System.out.print("TestSenderAgent Starting...");
-
-        //Start the socket.io server
-        //server.init();
-
         //---Add Behaviors---
         addBehaviour(new TickerBehaviour(this, 2000) {
             public void onTick() {

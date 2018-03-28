@@ -53,8 +53,25 @@
      * @param target the target element from the dom on which we should render
      */
     exports.init = function (target) {
-        client.on('grid', function (grid) {// create an array with nodes
-            var nodes = new vis.DataSet(grid.nodes.map(function (node) {
+        //Init empty data sets
+        var nodes = new vis.DataSet();
+        var edges = new vis.DataSet();
+
+        // create a network
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {};
+        var network = new vis.Network(target, data, options);
+
+        client.on('grid', function (grid) {
+            //clear out the old data
+            nodes.clear();
+            edges.clear();
+
+            //update the grid data
+            nodes.add(grid.nodes.map(function (node) {
                 return {
                     id: node._id,
                     label: node._id,
@@ -62,23 +79,20 @@
                     shape: 'image'
                 }
             }));
-
-            // create an array with edges
-            var edges = new vis.DataSet(grid.edges.map(function (edge) {
+            edges.add(grid.edges.map(function (edge) {
                 return {
                     from: edge.from,
                     to: edge.to,
                     label: edge._id
                 }
             }));
+        });
 
-            // create a network
-            var data = {
-                nodes: nodes,
-                edges: edges
-            };
-            var options = {};
-            var network = new vis.Network(target, data, options);
+        client.on('datum', function (datum) {
+            nodes.update({
+                id: datum.node._id,
+                label: datum.value.toString()
+            });
         });
     };
 }));
