@@ -1,5 +1,7 @@
 package edu.ucdenver.park.microgrid.live;
 
+import java.io.Serializable;
+
 /**
  * Message
  *
@@ -12,5 +14,5 @@ package edu.ucdenver.park.microgrid.live;
  * For instance, the MicrogridFloatDatumMessage contains one float datum.
  * For instance, the MicrogridGraphMessage contains one datum.
  */
-public class Message {
+public class Message implements Serializable {
 }

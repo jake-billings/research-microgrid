@@ -1,5 +1,6 @@
 package edu.ucdenver.park.microgrid.data.abs;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -17,7 +18,7 @@ import java.util.Objects;
  *
  * @author Jake Billings
  */
-public abstract class Entity {
+public abstract class Entity implements Serializable {
     /**
      * _id
      *

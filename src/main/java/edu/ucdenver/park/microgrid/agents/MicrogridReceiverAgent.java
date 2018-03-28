@@ -1,10 +1,13 @@
 package edu.ucdenver.park.microgrid.agents;
 
 import edu.ucdenver.park.microgrid.live.LiveMicrogridGraph;
+import edu.ucdenver.park.microgrid.live.MicrogridDatumMessage;
+import edu.ucdenver.park.microgrid.live.MicrogridGraphMessage;
 import edu.ucdenver.park.microgrid.socketioserver.MicrogridSocketIOServer;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 
 /**
  * MicrogridReceiverAgent
@@ -64,7 +67,7 @@ public class MicrogridReceiverAgent extends Agent {
         System.out.print("MicrogridReceiverAgent Starting...");
 
         //Start the socket.io server
-        //server.init();
+        server.init();
 
         //---Add Behaviors---
         addBehaviour(new ReceiveBehavior());
@@ -79,20 +82,29 @@ public class MicrogridReceiverAgent extends Agent {
      * ReceiveBehavior
      * <p>
      * class
-     * private internal class: this class exists INSIDE the MicrogridReceiverAgent class and is private to it (it is used only in setup())
-     * behavior: this a JADE behavior class
+     *  private internal class: this class exists INSIDE the MicrogridReceiverAgent class and is private to it (it is used only in setup())
+     *  behavior: this a JADE behavior class
      * <p>
      * This CyclicBehavior continuously reads messages via JADE's messaging system and passes the messages
      * back into LiveMicrogridGraph
      */
     private class ReceiveBehavior extends CyclicBehaviour {
         public void action() {
-            System.out.println("Receiveing...");
             ACLMessage msg = receive();
-            if (msg != null)
-                System.out.println(" - " +
-                        myAgent.getLocalName() + " <- " +
-                        msg.getContent());
+            if (msg != null) {
+                try {
+                    Object contentObject = msg.getContentObject();
+                    if (contentObject instanceof MicrogridGraphMessage) {
+                        liveGrid.receiveMessage((MicrogridGraphMessage) contentObject);
+                    } else if (contentObject instanceof MicrogridDatumMessage) {
+                        liveGrid.receiveMessage((MicrogridDatumMessage) contentObject);
+                    } else {
+                        System.err.println("WARNING: Unknown message received in MicrogridReceiverAgent");
+                    }
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+            }
             block();
         }
     }

@@ -67,7 +67,7 @@ public class LiveMicrogridGraph {
     }
 
     /**
-     * receiveMessage(DatumMessage)
+     * receiveMessage(MicrogridDatumMessage)
      *
      * updates the messages map with this latest message
      *
@@ -77,9 +77,9 @@ public class LiveMicrogridGraph {
      *
      * fires the "onDatum" event to DatumHandlers
      *
-     * @param message a DatumMessage message containing a datum
+     * @param message a MicrogridDatumMessage message containing a datum
      */
-    public void receiveMessage(DatumMessage message) {
+    public void receiveMessage(MicrogridDatumMessage message) {
         fireDatumEvent(message.getDatum());
     }
 

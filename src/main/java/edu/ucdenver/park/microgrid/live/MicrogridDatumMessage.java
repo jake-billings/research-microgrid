@@ -3,7 +3,7 @@ package edu.ucdenver.park.microgrid.live;
 import edu.ucdenver.park.microgrid.data.abs.Datum;
 
 /**
- * DatumMessage
+ * MicrogridDatumMessage
  *
  * class
  *
@@ -13,10 +13,10 @@ import edu.ucdenver.park.microgrid.data.abs.Datum;
  *
  * It is received by LiveMicrogridGraph
  */
-public class DatumMessage extends Message {
+public class MicrogridDatumMessage extends Message {
     private final Datum datum;
 
-    public DatumMessage(Datum datum) {
+    public MicrogridDatumMessage(Datum datum) {
         this.datum = datum;
     }
 
