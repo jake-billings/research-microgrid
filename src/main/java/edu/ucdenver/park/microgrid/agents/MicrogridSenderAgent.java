@@ -85,9 +85,6 @@ public abstract class MicrogridSenderAgent extends Agent {
         //Print a message that says the agent is starting
         System.out.print("MicrogridSenderAgent Starting...");
 
-        //Start the socket.io server
-        //server.init();
-
         //---Add Behaviors---
         addBehaviour(new SendMicrogridGraphMessageBehavior(this, this.gridUpdatePeriod, 1000));
 
