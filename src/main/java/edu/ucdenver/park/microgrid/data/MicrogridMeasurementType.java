@@ -8,6 +8,8 @@ package edu.ucdenver.park.microgrid.data;
  * types of measurements MicrogridDatum can have and unit strings for them
  *
  * E.g. Voltage-Volts-V
+ *
+ * @author Jake Billings
  */
 public enum MicrogridMeasurementType {
     VOLTAGE(1, "Voltage", "Volts", "V"),

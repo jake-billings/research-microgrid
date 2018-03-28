@@ -23,6 +23,8 @@ import java.io.IOException;
  * See Edge, MicrogridSocketIOServer
  * See Jackson Serializers/Modules
  * See JacksonJsonSupport
+ *
+ * @author Jake Billings
  */
 public class MicrogridEdgeSerializer extends StdSerializer<MicrogridEdge> {
     MicrogridEdgeSerializer(Class<MicrogridEdge> t) {

@@ -28,6 +28,8 @@ import edu.ucdenver.park.microgrid.socketioserver.serializers.MicrogridJacksonMo
  *  Javascript uses a data format called JSON. It's easy to work with in javascript. It's kind of a pain in Java.
  *  Jackson is a Java library for encoding/decoding objects to/from JSON. netty-socketio uses Jackson to encode/decode
  *   objects before sending the to the javascript frontend via the socket.io protocol.
+ *
+ * @author Jake Billings
  */
 public class MicrogridSocketIOServer {
     private final LiveMicrogridGraph grid;

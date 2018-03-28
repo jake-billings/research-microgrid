@@ -31,6 +31,8 @@ import java.util.Set;
  *  Messages should be set to expire a few seconds after the next message is scheduled to be sent. As a result,
  *  if an agent goes offline, its subgraph will be removed from the grid state once its next scheduled message is
  *  missed. Once it comes back online, its subgraph is added to the main state immediately.
+ *
+ * @author Jake Billings
  */
 public class LiveMicrogridGraph {
     /**

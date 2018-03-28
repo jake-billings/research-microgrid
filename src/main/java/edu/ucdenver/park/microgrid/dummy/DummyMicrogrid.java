@@ -11,6 +11,8 @@ import java.util.Set;
  * subclass of MicrogridGraph
  * <p>
  * Fills a microgrid graph with dummy data for testing purposes
+ *
+ * @author Jake Billings
  */
 public class DummyMicrogrid extends MicrogridGraph {
     private static Set<MicrogridNode> dummyNodes = new HashSet<MicrogridNode>();

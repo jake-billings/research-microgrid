@@ -8,6 +8,8 @@ import jade.core.Agent;
  * basic agent that demonstrates JADE is working
  *
  * todo remove this cause it doesn't do anything
+ *
+ * @author Jake Billings
  */
 public class HelloAgent extends Agent
 {

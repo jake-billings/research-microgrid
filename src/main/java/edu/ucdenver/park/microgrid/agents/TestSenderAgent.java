@@ -13,6 +13,8 @@ import jade.lang.acl.ACLMessage;
  * test agent that sends a string to "jake" every 2 seconds
  *
  * todo remove because this isn't useful; it's just here for reference
+ *
+ * @author Jake Billings
  */
 public class TestSenderAgent extends Agent {
     protected void setup() {

@@ -8,6 +8,8 @@ import edu.ucdenver.park.microgrid.data.abs.Datum;
  * interface
  *
  * implementations may be used as datum event handlers registered to LiveMicrogridGraph
+ *
+ * @author Jake Billings
  */
 public interface DatumHandler {
     /**

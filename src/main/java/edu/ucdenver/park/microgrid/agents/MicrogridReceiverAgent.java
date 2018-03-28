@@ -19,6 +19,8 @@ import jade.lang.acl.UnreadableException;
  * This is the entry point to the program.
  * <p>
  * This ties everything together.
+ *
+ * @author Jake Billings
  */
 public class MicrogridReceiverAgent extends Agent {
     /**

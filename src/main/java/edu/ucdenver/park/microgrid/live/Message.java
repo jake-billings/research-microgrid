@@ -13,6 +13,8 @@ import java.io.Serializable;
  *
  * For instance, the MicrogridFloatDatumMessage contains one float datum.
  * For instance, the MicrogridGraphMessage contains one datum.
+ *
+ * @author Jake Billings
  */
 public class Message implements Serializable {
 }

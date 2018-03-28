@@ -10,6 +10,8 @@ package edu.ucdenver.park.microgrid.data;
  * Each microgrid edge will have a type such as "power connection" or "data connection"
  * Since these edges don't behave differently in code; only in rendering, they are represented using an
  * enum type field on the MircrogridEdge object (as opposed to subclasses)
+ *
+ * @author Jake Billings
  */
 public enum MicrogridEdgeType {
     //todo actual connection types

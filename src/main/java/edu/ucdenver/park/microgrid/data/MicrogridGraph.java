@@ -13,6 +13,8 @@ import java.util.Set;
  * immutable
  * <p>
  * subclass of Edge with microgrid-specific data
+ *
+ * @author Jake Billings
  */
 public class MicrogridGraph extends Graph<MicrogridEdge, MicrogridNode> {
     public MicrogridGraph(String _id) {

@@ -12,6 +12,8 @@ import edu.ucdenver.park.microgrid.data.abs.Datum;
  * This message wraps a Datum object allowing it to be transported via the live message protocol
  *
  * It is received by LiveMicrogridGraph
+ *
+ * @author Jake Billings
  */
 public class MicrogridDatumMessage extends Message {
     private final Datum datum;

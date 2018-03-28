@@ -10,6 +10,8 @@ import edu.ucdenver.park.microgrid.data.abs.Node;
  * immutable
  *
  * subclass of Node with microgrid-specific data
+ *
+ * @author Jake Billings
  */
 public class MicrogridNode extends Node {
     /**

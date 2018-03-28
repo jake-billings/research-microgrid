@@ -8,6 +8,8 @@ import edu.ucdenver.park.microgrid.data.MicrogridGraph;
  * interface
  *
  * implementations may be used as microgrid graph event handlers registered to LiveMicrogridGraph
+ *
+ * @author Jake Billings
  */
 public interface MicrogridGraphHandler {
 

@@ -25,6 +25,8 @@ import java.io.Serializable;
  * <p>
  * How to use:
  * subclass this agent
+ *
+ * @author Jake Billings
  */
 public abstract class MicrogridSenderAgent extends Agent {
     /**

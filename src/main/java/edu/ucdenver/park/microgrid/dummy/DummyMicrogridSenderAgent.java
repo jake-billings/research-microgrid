@@ -16,6 +16,8 @@ import jade.core.behaviours.TickerBehaviour;
  * <p>
  * this is a good example for writing agents that extend MicrogridSenderAgent
  * to send data to MicrogridReceiverAgent
+ *
+ * @author Jake Billings
  */
 public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
     /**
