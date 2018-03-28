@@ -67,34 +67,65 @@
                 hierarchical: {
                     sortMethod: 'directed'
                 }
+            },
+            physics: {
+                enabled: false
             }
         };
         var network = new vis.Network(target, data, options);
 
+        //Event: grid
+        // when we receive new grid graph data, check if it changed
+        // if it did, redraw the grid with the new data
         client.on('grid', function (grid) {
-            //clear out the old data
-            nodes.clear();
-            edges.clear();
+            //---Check if the graph changed by comparing the new/old nodes/edges--
+            var oldNodeIds = nodes.getIds();
+            var oldEdgeIds = edges.getIds();
 
-            //update the grid data
-            nodes.add(grid.nodes.map(function (node) {
-                return {
-                    id: node._id,
-                    label: node._id,
-                    image: 'img/' + _imgForNodeType(node.microgridNodeType),
-                    shape: 'image'
-                }
-            }));
-            edges.add(grid.edges.map(function (edge) {
-                return {
-                    from: edge.from,
-                    to: edge.to,
-                    label: edge._id,
-                    arrows: 'to'
-                }
-            }));
+            var newNodeIds = grid.nodes.map(function (node) {
+                return node._id;
+            });
+            var newEdgeIds = grid.edges.map(function (edge) {
+                return edge._id;
+            });
+
+            oldNodeIds.sort();
+            oldEdgeIds.sort();
+            newNodeIds.sort();
+            newEdgeIds.sort();
+
+            var graphChanged = (JSON.stringify(newNodeIds) !== JSON.stringify(oldNodeIds)) || (JSON.stringify(newEdgeIds) !== JSON.stringify(oldEdgeIds));
+
+            //---If the graph changed, update the graph data---
+            // this will trigger a total redraw/loss of state
+            if (graphChanged) {
+                //clear out the old data
+                nodes.clear();
+                edges.clear();
+
+                //update the grid data
+                nodes.add(grid.nodes.map(function (node) {
+                    return {
+                        id: node._id,
+                        label: node._id,
+                        image: 'img/' + _imgForNodeType(node.microgridNodeType),
+                        shape: 'image'
+                    }
+                }));
+                edges.add(grid.edges.map(function (edge) {
+                    return {
+                        id: edge._id,
+                        from: edge.from,
+                        to: edge.to,
+                        label: edge._id,
+                        arrows: 'to'
+                    }
+                }));
+            }
         });
 
+        //Event: datum
+        // when we receive a datum, update the node's label
         client.on('datum', function (datum) {
             nodes.update({
                 id: datum.node._id,
