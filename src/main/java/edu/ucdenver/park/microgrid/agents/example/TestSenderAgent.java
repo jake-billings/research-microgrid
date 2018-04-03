@@ -1,4 +1,4 @@
-package edu.ucdenver.park.microgrid.agents;
+package edu.ucdenver.park.microgrid.agents.example;
 
 import jade.core.AID;
 import jade.core.Agent;
