@@ -58,7 +58,7 @@ public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
         // long gridUpdatePeriod = 5000;
 
         //Call super with the parameters from above
-        super(new AID("DataAgent", AID.ISLOCALNAME), new DummyMicrogrid(), 5000);
+        super(new AID("ReceiverAgent", AID.ISLOCALNAME), new DummyMicrogrid(), 5000);
     }
 
     /**
