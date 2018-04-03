@@ -11,3 +11,10 @@ target
 
 #Ignore mac files
 .DS_Store
+
+#Igore JADE files
+APDescription.txt
+MTPs-Main-Container.txt
+
+#Ingore misc. files
+*.log
