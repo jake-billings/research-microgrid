@@ -8,7 +8,8 @@ Each data structure is abstracted in the "abs" package such that the code could 
 
 ## Architecture
 ### Data Flow
-1. Measured by Sender Agent
+1. Measured by Sender Agent, which interfaces with control hardware
+![Hardware](docs/screenshots/hardware.jpg)
 2. Sent via JADE to Receiver Agent
 3. Sent from Receiver Agent to Frontend Client via Socket.io
 
@@ -73,3 +74,7 @@ Each data structure is abstracted in the "abs" package such that the code could 
 ![JADE GUI](docs/screenshots/JADEInterfaceWithBothAgents.png)
 
 3e. Run each agent and ensure that it displays appropriately in the JADE GUI
+
+## Goals
+The scrolling graph may eventually look like this oscilloscope.
+![oscilloscope](docs/screenshots/oscilloscope.PNG)
