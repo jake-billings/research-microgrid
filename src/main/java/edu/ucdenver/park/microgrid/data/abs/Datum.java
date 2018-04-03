@@ -1,6 +1,8 @@
+/*
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE', which is part of this source code package.
+ */
 package edu.ucdenver.park.microgrid.data.abs;
-
-import edu.ucdenver.park.microgrid.data.abs.Entity;
 
 /**
  * Datum
