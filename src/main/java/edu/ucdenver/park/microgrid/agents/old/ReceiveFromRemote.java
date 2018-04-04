@@ -2,7 +2,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE', which is part of this source code package.
  */
-package edu.ucdenver.park.microgrid.agents.example;
+package edu.ucdenver.park.microgrid.agents.old;
 
 import jade.core.Agent;
 import jade.core.behaviours.*;
@@ -12,7 +12,6 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-import java.util.*;
 
 public class ReceiveFromRemote extends Agent {
 

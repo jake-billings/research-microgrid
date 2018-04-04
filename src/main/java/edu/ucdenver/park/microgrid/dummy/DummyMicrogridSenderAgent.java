@@ -18,8 +18,11 @@ import jade.core.behaviours.TickerBehaviour;
  * <p>
  * this is a MicrogridSenderAgent that uses dummy microgrid data
  * <p>
- * this is a good example for writing agents that extend MicrogridSenderAgent
+ * this is a good reference for writing agents that extend MicrogridSenderAgent
  * to send data to MicrogridReceiverAgent
+ * <p>
+ * this agent is used for testing/developing the frontend UI
+ * if you're looking for a file to copy/paste, use ExampleMicrogridSenderAgent
  *
  * @author Jake Billings
  */
@@ -36,7 +39,7 @@ public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
      * that represents your graph structure
      */
     public DummyMicrogridSenderAgent() {
-        //AID: this is what points to the MicrogridSenderAgent
+        //AID: this is what points to the MicrogridReceiverAgent
         // use the local name of the agent as the first string parameter
         // AID aid = new AID("jake", AID.ISLOCALNAME);
 
@@ -74,7 +77,7 @@ public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
      * <p>
      * then, we can add additional behaviors
      * <p>
-     * since this is a dummy example, I add a behavior that sends dummy data for one node every 2 seconds
+     * since this is a dummy old, I add a behavior that sends dummy data for one node every 2 seconds
      * <p>
      * in an actual
      */
