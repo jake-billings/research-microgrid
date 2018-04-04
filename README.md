@@ -77,4 +77,4 @@ Each data structure is abstracted in the "abs" package such that the code could 
 
 ## Goals
 The scrolling graph may eventually look like this oscilloscope.
-![oscilloscope](docs/screenshots/oscilloscope.PNG)
+![oscilloscope](docs/screenshots/oscilloscope.png)
