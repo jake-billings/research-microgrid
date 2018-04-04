@@ -2,7 +2,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE', which is part of this source code package.
  */
-package edu.ucdenver.park.microgrid.agents.core.example;
+package edu.ucdenver.park.microgrid.agents.example;
 
 import edu.ucdenver.park.microgrid.agents.core.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.*;
