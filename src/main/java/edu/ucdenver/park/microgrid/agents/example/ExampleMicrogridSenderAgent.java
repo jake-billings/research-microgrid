@@ -27,6 +27,14 @@ import java.util.Set;
  * <p>
  * see Dummy MicrogridSenderAgent if you need a functional dummy agent to test frontend or something
  *
+ * How to use:
+ *  1. Copy this file
+ *  2. Rename the class and file based on what the agent will be doing. (For instance, "ControllerAMicrogridSenderAgent")
+ *  3. Change makeReceiverAID() to point at the actual receiver server you're using
+ *  4. Change makeMicrogridGraph() to represent your actual electrical grid graph data
+ *  5. Change makeGridUpdatePeriod() to represent a reasonable update period for your graph data (don't change it in development unless you know what you're doing)
+ *  6. Change the TickerBehaviour in setup() to read the actual data you're reading and send it
+ *
  * @author Jake Billings
  */
 public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
@@ -63,6 +71,7 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
      * @return a microgrid graph representing the subgraph we know about
      */
     private static MicrogridGraph makeMicrogridGraph() {
+        //Declare two hash sets to hold our nodes and edges
         Set<MicrogridNode> dummyNodes = new HashSet<MicrogridNode>();
         Set<MicrogridEdge> dummyEdges = new HashSet<MicrogridEdge>();
 
