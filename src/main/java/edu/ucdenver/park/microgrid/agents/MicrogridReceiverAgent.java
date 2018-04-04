@@ -5,8 +5,8 @@
 package edu.ucdenver.park.microgrid.agents;
 
 import edu.ucdenver.park.microgrid.live.LiveMicrogridGraph;
-import edu.ucdenver.park.microgrid.live.MicrogridDatumMessage;
-import edu.ucdenver.park.microgrid.live.MicrogridGraphMessage;
+import edu.ucdenver.park.microgrid.message.MicrogridDatumMessage;
+import edu.ucdenver.park.microgrid.message.MicrogridGraphMessage;
 import edu.ucdenver.park.microgrid.socketioserver.MicrogridSocketIOServer;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;

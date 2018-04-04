@@ -6,6 +6,7 @@ package edu.ucdenver.park.microgrid.live;
 
 import edu.ucdenver.park.microgrid.data.MicrogridGraph;
 import edu.ucdenver.park.microgrid.dummy.DummyMicrogrid;
+import edu.ucdenver.park.microgrid.message.MicrogridGraphMessage;
 import org.junit.jupiter.api.Test;
 
 class LiveMicrogridGraphTest {

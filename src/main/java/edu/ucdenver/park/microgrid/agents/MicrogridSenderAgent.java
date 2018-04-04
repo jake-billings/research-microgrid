@@ -6,8 +6,8 @@ package edu.ucdenver.park.microgrid.agents;
 
 import edu.ucdenver.park.microgrid.data.MicrogridGraph;
 import edu.ucdenver.park.microgrid.data.abs.Datum;
-import edu.ucdenver.park.microgrid.live.MicrogridDatumMessage;
-import edu.ucdenver.park.microgrid.live.MicrogridGraphMessage;
+import edu.ucdenver.park.microgrid.message.MicrogridDatumMessage;
+import edu.ucdenver.park.microgrid.message.MicrogridGraphMessage;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.TickerBehaviour;
