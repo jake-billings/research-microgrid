@@ -24,6 +24,12 @@ import jade.core.behaviours.TickerBehaviour;
  * @author Jake Billings
  */
 public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
+    private static AID getMyAID() {
+        AID aid = new AID("ReceiverAgent@10.20.102.203:1100/JADE", AID.ISGUID);
+        aid.addAddresses("http://NC2611-PC-16.ucdenver.pvt:7778/acc");
+        return aid;
+    }
+
     /**
      * DummyMicrogridSenderAgent()
      * <p>
@@ -62,7 +68,7 @@ public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
         // long gridUpdatePeriod = 5000;
 
         //Call super with the parameters from above
-        super(new AID("ReceiverAgent", AID.ISLOCALNAME), new DummyMicrogrid(), 5000);
+        super(getMyAID(), new DummyMicrogrid(), 5000);
     }
 
     /**
@@ -101,7 +107,7 @@ public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
                                 //Pretend we're measuring voltage
                                 MicrogridMeasurementType.VOLTAGE,
                                 //Provide a dummy value for the measurement
-                                15.0F));
+                                20.0F));
             }
         });
     }
