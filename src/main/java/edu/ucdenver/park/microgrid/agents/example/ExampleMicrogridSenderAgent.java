@@ -26,14 +26,14 @@ import java.util.Set;
  * if you're looking for a file to copy/paste this is it
  * <p>
  * see Dummy MicrogridSenderAgent if you need a functional dummy agent to test frontend or something
- *
+ * <p>
  * How to use:
- *  1. Copy this file
- *  2. Rename the class and file based on what the agent will be doing. (For instance, "ControllerAMicrogridSenderAgent")
- *  3. Change makeReceiverAID() to point at the actual receiver server you're using
- *  4. Change makeMicrogridGraph() to represent your actual electrical grid graph data
- *  5. Change makeGridUpdatePeriod() to represent a reasonable update period for your graph data (don't change it in development unless you know what you're doing)
- *  6. Change the TickerBehaviour in setup() to read the actual data you're reading and send it
+ * 1. Copy this file
+ * 2. Rename the class and file based on what the agent will be doing. (For instance, "ControllerAMicrogridSenderAgent")
+ * 3. Change makeReceiverAID() to point at the actual receiver server you're using
+ * 4. Change makeMicrogridGraph() to represent your actual electrical grid graph data
+ * 5. Change makeGridUpdatePeriod() to represent a reasonable update period for your graph data (don't change it in development unless you know what you're doing)
+ * 6. Change the TickerBehaviour in setup() to read the actual data you're reading and send it
  *
  * @author Jake Billings
  */
@@ -44,6 +44,8 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
      * this is what points to the MicrogridReceiverAgent
      * use the local name of the agent as the first string parameter
      * AID aid = new AID("jake", AID.ISLOCALNAME);
+     * <p>
+     * Recommended action: Make sure this is up to date with the receiving agent you're using
      *
      * @return an AID pointing to the agent that will receive the data we send
      */
@@ -67,6 +69,8 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
      * it tells the map what to draw
      * data we send will belong to nodes that are in this object
      * MicrogridGraph subgraph = new DummyMicrogrid();
+     * <p>
+     * Recommended action: Rewrite the Node and Edge creation calls to match your actual network
      *
      * @return a microgrid graph representing the subgraph we know about
      */
@@ -110,6 +114,9 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
      * In a production environment, this could easily be set to hours since the graph
      * doesn't really change
      * long gridUpdatePeriod = 5000;
+     * <p>
+     * Recommended action: Don't change this unless this application moves from development in the lab to production in
+     * the real world
      *
      * @return the number of milliseconds between grid updates
      */
@@ -127,6 +134,10 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
      * <p>
      * You need to call super with an agent id (AID) that points to the MicrogridReceiverAgent and a MicrogridGraph
      * that represents your graph structure
+     * <p>
+     * you do not need to edit this constructor
+     * <p>
+     * Recommended action: none
      */
     public ExampleMicrogridSenderAgent() {
         //Call super with the parameters from above
@@ -145,6 +156,9 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
      * since this is a dummy old, I add a behavior that sends dummy data for one node every 2 seconds
      * <p>
      * in an actual
+     * <p>
+     * <p>
+     * Recommended action: add data logging for every node you intend to measure
      */
     protected void setup() {
         super.setup();
