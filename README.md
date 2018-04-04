@@ -58,7 +58,7 @@ Each data structure is abstracted in the "abs" package such that the code could 
 ![Open run configuration](docs/screenshots/IntelliJRunConfig.png)
 
 3b. Create a run configuration for the receiver agent
-`java jade.Boot -gui -local-port 1100 ReceiverAgent:edu.ucdenver.park.microgrid.agents.MicrogridReceiverAgent`
+`java jade.Boot -gui -local-port 1100 ReceiverAgent:MicrogridReceiverAgent`
 ![Run Config](docs/screenshots/IntelliJRunConfigReceiverAgent.png)
 
 ![JADE GUI](docs/screenshots/JADEInterfaceWithReceiverAgent.png)

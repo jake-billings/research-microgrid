@@ -4,7 +4,7 @@
  */
 package edu.ucdenver.park.microgrid.dummy;
 
-import edu.ucdenver.park.microgrid.agents.MicrogridSenderAgent;
+import edu.ucdenver.park.microgrid.agents.core.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.FloatMicrogridDatum;
 import edu.ucdenver.park.microgrid.data.MicrogridMeasurementType;
 import edu.ucdenver.park.microgrid.data.MicrogridNode;
