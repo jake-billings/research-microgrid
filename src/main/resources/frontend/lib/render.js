@@ -41,12 +41,23 @@
     function _imgForNodeType(nodeType) {
         switch (nodeType.toUpperCase()) {
             case 'BATTERY':
-                return 'Battery.jpg';
+                return 'battery.png';
             case 'GENERATOR':
-                return 'Generator.png';
+                return 'generator.png';
+            case 'LOAD':
+                return 'load.png';
+            case 'CIRCUIT_BREAKER':
+                return 'circuit_breaker_closed.png';
+            case 'HUB':
+                return 'hub.png';
             default:
-                throw new Error('unknown node type');
+                throw new Error('unknown node type: ' + nodeType);
         }
+    }
+
+    function _levelForNode(node) {
+        if (node._id.indexOf('central')>=0) return 1;
+        return 2;
     }
 
     /**
@@ -67,14 +78,6 @@
             edges: edges
         };
         var options = {
-            layout: {
-                hierarchical: {
-                    sortMethod: 'directed'
-                }
-            },
-            physics: {
-                enabled: false
-            }
         };
         var network = new vis.Network(target, data, options);
 
@@ -111,7 +114,6 @@
                 nodes.add(grid.nodes.map(function (node) {
                     return {
                         id: node._id,
-                        label: node._id,
                         image: 'img/' + _imgForNodeType(node.microgridNodeType),
                         shape: 'image'
                     }
@@ -121,7 +123,6 @@
                         id: edge._id,
                         from: edge.from,
                         to: edge.to,
-                        label: edge._id,
                         arrows: 'to'
                     }
                 }));
@@ -133,7 +134,7 @@
         client.on('datum', function (datum) {
             nodes.update({
                 id: datum.node._id,
-                label: datum.value.toString()
+                label: datum.value.toString() + ' ' + datum.measurementType
             });
         });
     };
