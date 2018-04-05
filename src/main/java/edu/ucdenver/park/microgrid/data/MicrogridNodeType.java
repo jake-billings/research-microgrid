@@ -18,7 +18,9 @@ package edu.ucdenver.park.microgrid.data;
 public enum MicrogridNodeType {
     GENERATOR(1, "Generator"),
     BATTERY(2, "Battery"),
-    CONTROLLER(3, "Controller");
+    LOAD(3, "Load"),
+    CIRCUIT_BREAKER(4, "Circuit Breaker"),
+    HUB(5, "Hub");
 
     /**
      * _id
