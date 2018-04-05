@@ -10,10 +10,10 @@ import com.corundumstudio.socketio.protocol.JacksonJsonSupport;
 import com.corundumstudio.socketio.protocol.JsonSupport;
 import edu.ucdenver.park.microgrid.data.MicrogridGraph;
 import edu.ucdenver.park.microgrid.data.abs.Datum;
-import edu.ucdenver.park.microgrid.live.DatumHandler;
-import edu.ucdenver.park.microgrid.live.LiveMicrogridGraph;
-import edu.ucdenver.park.microgrid.live.MicrogridGraphHandler;
+import edu.ucdenver.park.microgrid.live.*;
 import edu.ucdenver.park.microgrid.socketioserver.serializers.MicrogridJacksonModule;
+
+import java.util.Set;
 
 /**
  * MicrogridSocketIOServer
@@ -35,7 +35,7 @@ import edu.ucdenver.park.microgrid.socketioserver.serializers.MicrogridJacksonMo
  *
  * @author Jake Billings
  */
-public class MicrogridSocketIOServer implements MicrogridGraphHandler, DatumHandler {
+public class MicrogridSocketIOServer implements MicrogridGraphHandler, DatumHandler, MicrogridNodeSnapshotHandler {
     private final LiveMicrogridGraph grid;
     private final short port;
     private SocketIOServer server;
@@ -116,6 +116,21 @@ public class MicrogridSocketIOServer implements MicrogridGraphHandler, DatumHand
      */
     public void onDatum(Datum datum) {
         server.getBroadcastOperations().sendEvent("datum", datum);
+    }
+
+    /**
+     * onMicrogridNodeSnapshots()
+     * <p>
+     * called when the receiver agent processes the node measurement state and gives us a
+     * set of node snapshots to send to the client
+     * <p>
+     * sends data only for nodes that have a last known measurement state; if no measurements
+     * are given, none are sent
+     *
+     * @param snapshots a complete set of node snapshots for a current known grid state
+     */
+    public void onMicrogridNodeSnapshots(Set<MicrogridNodeSnapshot> snapshots) {
+        server.getBroadcastOperations().sendEvent("nodeSnapshots", snapshots);
     }
 
     //----Getters----

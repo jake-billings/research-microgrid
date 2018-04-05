@@ -4,6 +4,7 @@
  */
 package edu.ucdenver.park.microgrid.message;
 
+import edu.ucdenver.park.microgrid.data.MicrogridDatum;
 import edu.ucdenver.park.microgrid.data.abs.Datum;
 
 /**
@@ -20,13 +21,13 @@ import edu.ucdenver.park.microgrid.data.abs.Datum;
  * @author Jake Billings
  */
 public class MicrogridDatumMessage extends Message {
-    private final Datum datum;
+    private final MicrogridDatum datum;
 
-    public MicrogridDatumMessage(Datum datum) {
+    public MicrogridDatumMessage(MicrogridDatum datum) {
         this.datum = datum;
     }
 
-    public Datum getDatum() {
+    public MicrogridDatum getDatum() {
         return datum;
     }
 }

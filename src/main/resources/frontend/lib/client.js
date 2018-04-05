@@ -69,6 +69,13 @@
     });
     _validEvents.push('grid');
 
+    //Event: nodeSnapshot
+    // logs a message to the console when we receive grid graph data
+    socket.on('nodeSnapshots', function(data) {
+        console.info('nodeSnapshots', data);
+    });
+    _validEvents.push('nodeSnapshots');
+
     //Event: datum
     // logs a message to the console when we receive grid graph data
     socket.on('datum', function(data) {

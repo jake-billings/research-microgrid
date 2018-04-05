@@ -79,6 +79,7 @@ public class MicrogridReceiverAgent extends Agent {
         //---Add Behaviors---
         addBehaviour(new ReceiveBehavior(this, 100));
         addBehaviour(new ProcessGridGraphStateBehavior(this, 5000));
+        addBehaviour(new ProcessGridMeasurementStateBehavior(this, 1000));
 
         //---Final Linking---
         //Pass datum events from the liveGrid to the SocketIO server
@@ -154,7 +155,7 @@ public class MicrogridReceiverAgent extends Agent {
      * <p>
      * This TickerBehavior runs on a regular interval
      * <p>
-     * the purpose of this behavior is to recomput the current microgrid graph state and send it to SocketIO clients at a regular
+     * the purpose of this behavior is to recompute the current microgrid graph state and send it to SocketIO clients at a regular
      * interval instead of immediately when receiving updates
      * this reduces CPU load when we have many sender agents sending us data all at the same time
      */
@@ -165,8 +166,31 @@ public class MicrogridReceiverAgent extends Agent {
 
         @Override
         protected void onTick() {
-            long start = System.currentTimeMillis();
             server.onMicrogridGraph(liveGrid.getCurrentState());
+        }
+    }
+
+    /**
+     * ProcessGridMeasurementStateBehavior
+     * <p>
+     * class
+     * private internal class: this class exists INSIDE the MicrogridReceiverAgent class and is private to it (it is used only in setup())
+     * behavior: this a JADE behavior class
+     * <p>
+     * This TickerBehavior runs on a regular interval
+     * <p>
+     * the purpose of this behavior is to recompute the current microgrid graph measurement state state and send it to
+     * SocketIO clients at a regular interval instead of immediately when receiving updates
+     * this reduces CPU load when we have many sender agents sending us data all at the same time
+     */
+    private class ProcessGridMeasurementStateBehavior extends TickerBehaviour {
+        ProcessGridMeasurementStateBehavior(Agent a, long period) {
+            super(a, period);
+        }
+
+        @Override
+        protected void onTick() {
+            server.onMicrogridNodeSnapshots(liveGrid.getCurrentStateForAllNodes());
         }
     }
 }

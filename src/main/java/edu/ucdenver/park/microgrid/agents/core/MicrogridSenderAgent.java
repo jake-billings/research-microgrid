@@ -4,6 +4,7 @@
  */
 package edu.ucdenver.park.microgrid.agents.core;
 
+import edu.ucdenver.park.microgrid.data.MicrogridDatum;
 import edu.ucdenver.park.microgrid.data.MicrogridGraph;
 import edu.ucdenver.park.microgrid.data.abs.Datum;
 import edu.ucdenver.park.microgrid.message.MicrogridDatumMessage;
@@ -108,7 +109,7 @@ public abstract class MicrogridSenderAgent extends Agent {
      *
      * @param d the datum object to send
      */
-    protected void sendDatum(Datum d) {
+    protected void sendDatum(MicrogridDatum d) {
         try {
             sendObjectMessage(new MicrogridDatumMessage(d), this.receiver);
         } catch (IOException e) {
