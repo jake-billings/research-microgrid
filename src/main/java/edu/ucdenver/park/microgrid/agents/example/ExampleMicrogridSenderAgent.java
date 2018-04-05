@@ -177,8 +177,6 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
                 sendDatum(
                         //Create a FloatMicrogridDatum object to hold the measurement
                         new FloatMicrogridDatum(
-                                //Generate a unique id relying on time and the uniqueness of the node id and measurement type
-                                "datum-" + node.get_id() + "-voltage-" + System.currentTimeMillis(),
                                 //Timestamp the datum with the current number of milliseconds from Jan 1st, 1970
                                 System.currentTimeMillis(),
                                 //Tell the Datum which node measured it

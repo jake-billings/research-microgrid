@@ -24,6 +24,12 @@ import edu.ucdenver.park.microgrid.data.abs.Datum;
  * This class is abstract because datum can have either float or boolean values. See the subclasses BooleanDatum and
  *  FloatDatum.
  *
+ * Important: the _id field of a Datum should be unique to the combination of its type and measurement location
+ *  as a result, data from the same measurement location and type will have the same _id but different
+ *  timestamp and value; this is important for data caching in LiveMicrogrid
+ *
+ * A unique identifier for an individual datum object should contain its _id AND its timestamp
+ *
  *  @author Jake Billings
  */
 public class MicrogridDatum extends Datum {
@@ -47,10 +53,8 @@ public class MicrogridDatum extends Datum {
      */
     private final MicrogridMeasurementType measurementType;
 
-    public MicrogridDatum(String _id, long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType) {
-        super(_id, timestamp);
-        if (node == null) throw new IllegalArgumentException("node cannot be null when creating a MicrogridDatum");
-        if (measurementType == null) throw new IllegalArgumentException("measurementType cannot be null when creating a MicrogridDatum");
+    public MicrogridDatum(long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType) {
+        super(node.get_id() + "-" + measurementType.get_id(), timestamp);
         this.node = node;
         this.measurementType = measurementType;
     }

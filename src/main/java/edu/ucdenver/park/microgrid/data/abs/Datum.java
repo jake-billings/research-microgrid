@@ -24,6 +24,12 @@ package edu.ucdenver.park.microgrid.data.abs;
  *
  * This class also makes no claim to part of a microgrid system. See the subclass MicrogridDatum
  *
+ * Important: the _id field of a Datum should be unique to the combination of its type and measurement location
+ *  as a result, data from the same measurement location and type will have the same _id but different
+ *  timestamp and value; this is important for data caching in LiveMicrogrid
+ *
+ * A unique identifier for an individual datum object should contain its _id AND its timestamp
+ *
  *  @author Jake Billings
  */
 public abstract class Datum extends Entity {

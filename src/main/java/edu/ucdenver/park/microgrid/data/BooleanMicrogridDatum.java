@@ -19,6 +19,12 @@ package edu.ucdenver.park.microgrid.data;
  * The datum with the most recent timestamp should represent the most up-to-date reading of an instrument at a given
  *  time.
  *
+ * Important: the _id field of a Datum should be unique to the combination of its type and measurement location
+ *  as a result, data from the same measurement location and type will have the same _id but different
+ *  timestamp and value; this is important for data caching in LiveMicrogrid
+ *
+ * A unique identifier for an individual datum object should contain its _id AND its timestamp
+ *
  *  @author Jake Billings
  */
 public class BooleanMicrogridDatum extends MicrogridDatum {
@@ -31,8 +37,8 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
      */
     private final boolean value;
 
-    public BooleanMicrogridDatum(String _id, long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType, boolean value) {
-        super(_id, timestamp, node, measurementType);
+    public BooleanMicrogridDatum(long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType, boolean value) {
+        super(timestamp, node, measurementType);
         this.value = value;
     }
 
