@@ -92,7 +92,7 @@ public abstract class MicrogridSenderAgent extends Agent {
         System.out.print("MicrogridSenderAgent Starting...");
 
         //---Add Behaviors---
-        addBehaviour(new SendMicrogridGraphMessageBehavior(this, this.gridUpdatePeriod, 1000));
+        addBehaviour(new SendMicrogridGraphMessageBehavior(this, this.gridUpdatePeriod, 2000));
 
         //---Completion Message---
         //Print a message that we finished setting up

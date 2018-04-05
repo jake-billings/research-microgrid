@@ -17,27 +17,28 @@ import edu.ucdenver.park.microgrid.socketioserver.serializers.MicrogridJacksonMo
 
 /**
  * MicrogridSocketIOServer
- *
+ * <p>
  * class
- *
+ * <p>
  * Runs a Socket.io-compatible server that serves the information from a mircogrid to a WebSocket client
- *
+ * <p>
  * uses the netty-socketio library to implement the socket.io protocol
- *
+ * <p>
  * layers
- *  Socket.io is a protocol that runs over either http or websocket that enables event-based client-server realtime communication
- *  Socket.io is also a javascript library that implements this protocol. The JS library is used on the frontend. Since
- *   this code is in Java, we use yet another library to implement the protocol. That library is netty-socketio, which
- *   runs on top of netty. Netty is a library for event-based processing on servers.
- *  Javascript uses a data format called JSON. It's easy to work with in javascript. It's kind of a pain in Java.
- *  Jackson is a Java library for encoding/decoding objects to/from JSON. netty-socketio uses Jackson to encode/decode
- *   objects before sending the to the javascript frontend via the socket.io protocol.
+ * Socket.io is a protocol that runs over either http or websocket that enables event-based client-server realtime communication
+ * Socket.io is also a javascript library that implements this protocol. The JS library is used on the frontend. Since
+ * this code is in Java, we use yet another library to implement the protocol. That library is netty-socketio, which
+ * runs on top of netty. Netty is a library for event-based processing on servers.
+ * Javascript uses a data format called JSON. It's easy to work with in javascript. It's kind of a pain in Java.
+ * Jackson is a Java library for encoding/decoding objects to/from JSON. netty-socketio uses Jackson to encode/decode
+ * objects before sending the to the javascript frontend via the socket.io protocol.
  *
  * @author Jake Billings
  */
-public class MicrogridSocketIOServer {
+public class MicrogridSocketIOServer implements MicrogridGraphHandler, DatumHandler {
     private final LiveMicrogridGraph grid;
     private final short port;
+    private SocketIOServer server;
 
     public MicrogridSocketIOServer(LiveMicrogridGraph grid, short port) {
         this.grid = grid;
@@ -46,9 +47,9 @@ public class MicrogridSocketIOServer {
 
     /**
      * init()
-     *
+     * <p>
      * method
-     *
+     * <p>
      * this is the function that actually sets up the service
      */
     public void init() {
@@ -66,7 +67,7 @@ public class MicrogridSocketIOServer {
         config.setJsonSupport(jsonSupport);
 
         //---Netty-Socketio Instantiation---
-        final SocketIOServer server = new SocketIOServer(config);
+        server = new SocketIOServer(config);
 
         //---Netty-Socketio Event Handlers---
         //Socket.io is an Event-Based protocol. To create the server, we register different event handlers.
@@ -80,37 +81,41 @@ public class MicrogridSocketIOServer {
             }
         });
 
-        //---LiveMicrogridGraph Handlers---
-        // When we receive data from agents, broadcast it via socket.io
-
-        //Event: datum
-        // when we receive an element from the data stream
-        grid.registerDatumHadler(new DatumHandler() {
-            public void onDatum(Datum datum) {
-                server.getBroadcastOperations().sendEvent("datum", datum);
-            }
-        });
-        //Event: grid
-        // when the grid is updated, send the update to the frontend
-        grid.registerMicrogridGraphHadler(new MicrogridGraphHandler() {
-            public void onMicrogridGraph(MicrogridGraph graph) {
-                server.getBroadcastOperations().sendEvent("grid", graph);
-            }
-        });
-
         //---Netty-Socketio Start---
         server.start();
 
         //---Netty-Socketio Shutdown---
         //Register a shutdown hook to start free resources when killing the server
-        Runtime.getRuntime().addShutdownHook(new Thread()
-        {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
-            public void run()
-            {
+            public void run() {
                 server.stop();
             }
         });
+    }
+
+    /**
+     * onMicrogridGraph()
+     * <p>
+     * when we receive a new copy of the microgrid graph (from the receiver agent),
+     * send the new graph to our clients
+     *
+     * @param graph a snapshot of the state of the LiveMicrogridGraph as a MicrogridGraph object
+     */
+    public void onMicrogridGraph(MicrogridGraph graph) {
+        server.getBroadcastOperations().sendEvent("grid", graph);
+    }
+
+    /**
+     * onDatum()
+     * <p>
+     * when we receive a new copy of a microgrid datum (from the receiver agent),
+     * send the datum to our clients
+     *
+     * @param datum the datum received in the message
+     */
+    public void onDatum(Datum datum) {
+        server.getBroadcastOperations().sendEvent("datum", datum);
     }
 
     //----Getters----
@@ -118,6 +123,7 @@ public class MicrogridSocketIOServer {
     public LiveMicrogridGraph getGrid() {
         return grid;
     }
+
     public short getPort() {
         return port;
     }

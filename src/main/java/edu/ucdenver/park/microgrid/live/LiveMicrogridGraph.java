@@ -9,10 +9,10 @@ import edu.ucdenver.park.microgrid.data.abs.Datum;
 import edu.ucdenver.park.microgrid.message.MicrogridDatumMessage;
 import edu.ucdenver.park.microgrid.message.MicrogridGraphMessage;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * LiveMicrogridGraph
@@ -54,7 +54,7 @@ public class LiveMicrogridGraph {
      *
      * received events put() a message in this map based on the _id property of the graph in the message
      */
-    private final Map<String, MicrogridGraphMessage> messages = new HashMap<String, MicrogridGraphMessage>();
+    private final Map<String, MicrogridGraphMessage> messages = new ConcurrentHashMap<String, MicrogridGraphMessage>();
 
     /**
      * receiveMessage(MicrogridGraphMessage)
@@ -71,7 +71,6 @@ public class LiveMicrogridGraph {
      */
     public void receiveMessage(MicrogridGraphMessage message) {
         messages.put(message.getSubgraph().get_id(), message);
-        fireMicrogridEvent(getCurrentState());
     }
 
     /**
@@ -106,6 +105,8 @@ public class LiveMicrogridGraph {
         for (MicrogridGraphMessage message : messages.values()) {
             if (message.getExpirationMillis() > now) {
                 graph = graph.union(graph.get_id(), message.getSubgraph());
+            } else {
+                System.out.println(message.getSubgraph().get_id()+" is expired by " + (now - message.getExpirationMillis()) + " ms");
             }
         }
         return graph;
@@ -113,25 +114,16 @@ public class LiveMicrogridGraph {
 
     //--Event Handler Sets--
     private final Set<DatumHandler> datumHandlers = new HashSet<DatumHandler>();
-    private final Set<MicrogridGraphHandler> graphHandlers = new HashSet<MicrogridGraphHandler>();
 
     //--Handler Registrations--
     public void registerDatumHadler(DatumHandler h) {
         datumHandlers.add(h);
-    }
-    public void registerMicrogridGraphHadler(MicrogridGraphHandler h) {
-        graphHandlers.add(h);
     }
 
     //--Fire Methods--
     private void fireDatumEvent(Datum d) {
         for (DatumHandler h : datumHandlers) {
             h.onDatum(d);
-        }
-    }
-    private void fireMicrogridEvent(MicrogridGraph d) {
-        for (MicrogridGraphHandler h : graphHandlers) {
-            h.onMicrogridGraph(d);
         }
     }
 

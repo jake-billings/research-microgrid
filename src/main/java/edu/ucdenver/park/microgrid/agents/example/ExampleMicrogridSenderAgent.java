@@ -113,15 +113,18 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
      * changes show up properly.
      * In a production environment, this could easily be set to hours since the graph
      * doesn't really change
-     * long gridUpdatePeriod = 5000;
+     * long gridUpdatePeriod = 30000;
      * <p>
      * Recommended action: Don't change this unless this application moves from development in the lab to production in
      * the real world
+     * <p>
+     * If this number is too small, you may overwhelm the receiving server and cause graph expirations due to
+     * processing delays
      *
      * @return the number of milliseconds between grid updates
      */
     private static long makeGridUpdatePeriod() {
-        return 5000;
+        return 30000;
     }
 
     /**

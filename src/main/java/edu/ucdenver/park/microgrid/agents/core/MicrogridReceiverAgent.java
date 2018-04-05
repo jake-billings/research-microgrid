@@ -10,6 +10,7 @@ import edu.ucdenver.park.microgrid.message.MicrogridGraphMessage;
 import edu.ucdenver.park.microgrid.socketioserver.MicrogridSocketIOServer;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
@@ -44,7 +45,7 @@ public class MicrogridReceiverAgent extends Agent {
      * The job of this agent is to parse Message object from jade and call liveGrid.receiveMessage()
      * the socket server will then receive those events and pass them to the frontend for rendering
      */
-    LiveMicrogridGraph liveGrid = new LiveMicrogridGraph();
+    private LiveMicrogridGraph liveGrid = new LiveMicrogridGraph();
 
     /**
      * server
@@ -60,7 +61,7 @@ public class MicrogridReceiverAgent extends Agent {
      * <p>
      * when we update liveGrid, server gets the update and forwards it as JSON to the frontend via Socket.io
      */
-    MicrogridSocketIOServer server = new MicrogridSocketIOServer(liveGrid, (short) 4000);
+    private MicrogridSocketIOServer server = new MicrogridSocketIOServer(liveGrid, (short) 4000);
 
     /**
      * setup()
@@ -76,7 +77,12 @@ public class MicrogridReceiverAgent extends Agent {
         server.init();
 
         //---Add Behaviors---
-        addBehaviour(new ReceiveBehavior());
+        addBehaviour(new ReceiveBehavior(this, 100));
+        addBehaviour(new ProcessGridGraphStateBehavior(this, 5000));
+
+        //---Final Linking---
+        //Pass datum events from the liveGrid to the SocketIO server
+        liveGrid.registerDatumHadler(server);
 
         //---Completion Message---
         //Print a message that we finished setting up
@@ -88,13 +94,37 @@ public class MicrogridReceiverAgent extends Agent {
      * ReceiveBehavior
      * <p>
      * class
-     *  private internal class: this class exists INSIDE the MicrogridReceiverAgent class and is private to it (it is used only in setup())
-     *  behavior: this a JADE behavior class
+     * private internal class: this class exists INSIDE the MicrogridReceiverAgent class and is private to it (it is used only in setup())
+     * behavior: this a JADE behavior class
      * <p>
      * This CyclicBehavior continuously reads messages via JADE's messaging system and passes the messages
      * back into LiveMicrogridGraph
      */
     private class ReceiveBehavior extends CyclicBehaviour {
+        /**
+         * blockTime
+         *
+         * long
+         *
+         * this is the parameter to block() that dictates how long we wait between reading messages
+         *  this helps us not peg the CPU while reading our messages but slows down our message
+         *  processing ability
+         *
+         * higher blockTime: better cpu performance/slower message processing/higher risk of queue overflow
+         * lower blockTime: worse cpu performance/faster message processing/lower risk of queue overflow
+         *
+         * this number should be significantly lower than the time interval between repeating messages
+         *  that the sender will receive
+         *
+         * E.g. if message send ever 10,000 ms, this should be 1,000 ms or less
+         */
+        private final long blockTime;
+
+        ReceiveBehavior(Agent a, long blockTime) {
+            super(a);
+            this.blockTime = blockTime;
+        }
+
         public void action() {
             ACLMessage msg = receive();
             if (msg != null) {
@@ -111,7 +141,32 @@ public class MicrogridReceiverAgent extends Agent {
                     e.printStackTrace();
                 }
             }
-            block();
+            block(this.blockTime);
+        }
+    }
+
+    /**
+     * ProcessGridGraphStateBehavior
+     * <p>
+     * class
+     * private internal class: this class exists INSIDE the MicrogridReceiverAgent class and is private to it (it is used only in setup())
+     * behavior: this a JADE behavior class
+     * <p>
+     * This TickerBehavior runs on a regular interval
+     * <p>
+     * the purpose of this behavior is to recomput the current microgrid graph state and send it to SocketIO clients at a regular
+     * interval instead of immediately when receiving updates
+     * this reduces CPU load when we have many sender agents sending us data all at the same time
+     */
+    private class ProcessGridGraphStateBehavior extends TickerBehaviour {
+        ProcessGridGraphStateBehavior(Agent a, long period) {
+            super(a, period);
+        }
+
+        @Override
+        protected void onTick() {
+            long start = System.currentTimeMillis();
+            server.onMicrogridGraph(liveGrid.getCurrentState());
         }
     }
 }
