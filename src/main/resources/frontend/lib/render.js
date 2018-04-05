@@ -129,12 +129,16 @@
             }
         });
 
-        //Event: datum
-        // when we receive a datum, update the node's label
-        client.on('datum', function (datum) {
-            nodes.update({
-                id: datum.node._id,
-                label: datum.value.toString() + ' ' + datum.measurementType
+        //Event: nodeSnapshots
+        // when we receive a node snapshot, update the node's label
+        client.on('nodeSnapshots', function (nodeSnapshots) {
+            nodeSnapshots.forEach(function (snapshot) {
+                nodes.update({
+                    id: snapshot._id,
+                    label: snapshot.measurements.reduce(function (label, measurement) {
+                        return label + +measurement.value + ' ' + measurement.measurementType + '\n';
+                    },'')
+                });
             });
         });
     };
