@@ -6,7 +6,7 @@ package edu.ucdenver.park.microgrid.dummy;
 
 import edu.ucdenver.park.microgrid.agents.core.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.FloatMicrogridDatum;
-import edu.ucdenver.park.microgrid.data.MicrogridMeasurementType;
+import edu.ucdenver.park.microgrid.data.MicrogridFloatMeasurementType;
 import edu.ucdenver.park.microgrid.data.MicrogridNode;
 import jade.core.AID;
 import jade.core.behaviours.TickerBehaviour;
@@ -100,7 +100,7 @@ public class DummyMicrogridSenderAgent extends MicrogridSenderAgent {
                                 //Tell the Datum which node measured it
                                 node,
                                 //Pretend we're measuring voltage
-                                MicrogridMeasurementType.VOLTAGE,
+                               MicrogridFloatMeasurementType.POTENTIAL,
                                 //Provide a dummy value for the measurement
                                 15.0F));
             }

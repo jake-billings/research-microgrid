@@ -4,21 +4,24 @@
  */
 package edu.ucdenver.park.microgrid.data;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
- * MicrogridMeasurementType
+ * MicrogridFloatMeasurementType
  *
  * enum
  *
- * types of measurements MicrogridDatum can have and unit strings for them
+ * types of measurements MicrogridFloatDatum can have and unit strings for them
  *
  * E.g. Voltage-Volts-V
  *
  * @author Jake Billings
  */
-public enum MicrogridMeasurementType {
-    VOLTAGE(1, "Voltage", "Volts", "V"),
-    AMPERAGE(2, "Amperage", "Amps", "A"),
-    WATTAGE(3, "Wattage", "Watts", "W");
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum MicrogridFloatMeasurementType {
+    POTENTIAL(1, "Voltage", "Volts", "V"),
+    CURRENT(2, "Amperage", "Amps", "A"),
+    POWER(3, "Wattage", "Watts", "W");
 
     /**
      * _id
@@ -27,6 +30,9 @@ public enum MicrogridMeasurementType {
      *
      * number representing the type of edge; will be in the data packet in the JADE transport protocol
      * should be declared in global protocol spec
+     *
+     * by an arbitrary convention I made up, these are positive for float measurement types
+     *  (as opposed to negative for boolean types)
      *
      * Ex: 2
      */
@@ -37,9 +43,9 @@ public enum MicrogridMeasurementType {
      *
      * String
      *
-     * the human-readable name of this type of microgrid edge
+     * the human-readable name of this measurement
      *
-     * Ex: "Power Connection", "Bus"
+     * Ex: "Current", "Power"
      */
     private final String name;
 
@@ -66,7 +72,7 @@ public enum MicrogridMeasurementType {
     private final String unitAbbreviation;
 
     /**
-     * MicrogridMeasurementType
+     * MicrogridFloatMeasurementType
      *
      * constructor
      *
@@ -75,19 +81,27 @@ public enum MicrogridMeasurementType {
      * @param unitName the human-readable unit name "Volts"
      * @param unitAbbreviation "V"
      */
-    MicrogridMeasurementType(int _id, String name, String unitName, String unitAbbreviation) {
+    MicrogridFloatMeasurementType(int _id, String name, String unitName, String unitAbbreviation) {
         this._id = _id;
         this.name = name;
         this.unitName = unitName;
         this.unitAbbreviation = unitAbbreviation;
     }
 
-
+    //----Getters----+
     public int get_id() {
         return this._id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public String getUnitAbbreviation() {
+        return unitAbbreviation;
     }
 }

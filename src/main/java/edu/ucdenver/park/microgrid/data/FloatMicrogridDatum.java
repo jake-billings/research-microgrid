@@ -29,6 +29,17 @@ package edu.ucdenver.park.microgrid.data;
  */
 public class FloatMicrogridDatum extends MicrogridDatum {
     /**
+     * measurementType
+     *
+     * MicrogridFloatMeasurementType
+     *
+     * see the MicrogridFloatMeasurementType docs
+     *
+     * this is the type of measurement made (e.g. Volts, Amps, Watts)
+     */
+    private final MicrogridFloatMeasurementType measurementType;
+
+    /**
      * value
      *
      * float
@@ -37,11 +48,26 @@ public class FloatMicrogridDatum extends MicrogridDatum {
      */
     private final float value;
 
-    public FloatMicrogridDatum(long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType, float value) {
-        super(timestamp, node, measurementType);
+    /**
+     * FloatMicrogridDatum
+     *
+     * constructor
+     *
+     * @param timestamp the unix time this datum was recorded at
+     * @param node the node object the datum was recorded at
+     * @param measurementType the MicrogridFloatMeasurementType of this measurement
+     * @param value the floating point value of this measurement
+     */
+    public FloatMicrogridDatum(long timestamp, MicrogridNode node, MicrogridFloatMeasurementType measurementType, float value) {
+        super(timestamp, node, measurementType.get_id());
         this.value = value;
+        this.measurementType = measurementType;
     }
 
+    //----Getters----
+    public MicrogridFloatMeasurementType getMeasurementType() {
+        return measurementType;
+    }
     public float getValue() {
         return value;
     }

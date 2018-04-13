@@ -121,7 +121,7 @@ public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
                                 //Tell the Datum which node measured it
                                 node,
                                 //Pretend we're measuring voltage
-                                MicrogridMeasurementType.VOLTAGE,
+                               MicrogridFloatMeasurementType.POTENTIAL,
                                 //Provide a dummy value for the measurement
                                 15.0F));
             }

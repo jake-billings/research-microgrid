@@ -136,7 +136,7 @@
                 nodes.update({
                     id: snapshot._id,
                     label: snapshot.measurements.reduce(function (label, measurement) {
-                        return label + +measurement.value + ' ' + measurement.measurementType + '\n';
+                        return label + +measurement.value + ' ' + measurement.measurementType.unitName + '\n';
                     },'')
                 });
             });

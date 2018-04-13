@@ -29,6 +29,17 @@ package edu.ucdenver.park.microgrid.data;
  */
 public class BooleanMicrogridDatum extends MicrogridDatum {
     /**
+     * measurementType
+     *
+     * MicrogridBooleanMeasurementType
+     *
+     * see the MicrogridBooleanMeasurementType docs
+     *
+     * this is the type of measurement made (e.g. Fault, CircuitBreakerStatus)
+     */
+    private final MicrogridBooleanMeasurementType measurementType;
+
+    /**
      * value
      *
      * float
@@ -37,12 +48,28 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
      */
     private final boolean value;
 
-    public BooleanMicrogridDatum(long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType, boolean value) {
-        super(timestamp, node, measurementType);
+    /**
+     * BooleanMicrogridDatum()
+     *
+     * constructor
+     *
+     * @param timestamp the unix timestamp this datum was recorded at
+     * @param node the node object this datum was recorded at
+     * @param measurementType the boolean measurement type of this datum
+     * @param value the boolean value of this measurement
+     */
+    public BooleanMicrogridDatum(long timestamp, MicrogridNode node, MicrogridBooleanMeasurementType measurementType, boolean value) {
+        super(timestamp, node, measurementType.get_id());
         this.value = value;
+        this.measurementType = measurementType;
     }
 
+    //----Getters----
     public boolean getValue() {
         return value;
+    }
+
+    public MicrogridBooleanMeasurementType getMeasurementType() {
+        return measurementType;
     }
 }

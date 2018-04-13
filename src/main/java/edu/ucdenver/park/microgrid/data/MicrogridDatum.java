@@ -42,28 +42,12 @@ public class MicrogridDatum extends Datum {
      */
     private final MicrogridNode node;
 
-    /**
-     * measurementType
-     *
-     * MicrogridMeasurementType
-     *
-     * see the MicrogridMeasurementType docs
-     *
-     * this is the type of measurement made (e.g. Volts, Amps, Watts)
-     */
-    private final MicrogridMeasurementType measurementType;
-
-    public MicrogridDatum(long timestamp, MicrogridNode node, MicrogridMeasurementType measurementType) {
-        super(node.get_id() + "-" + measurementType.get_id(), timestamp);
+    public MicrogridDatum(long timestamp, MicrogridNode node, int measurementTypeId) {
+        super(node.get_id() + "-" + measurementTypeId, timestamp);
         this.node = node;
-        this.measurementType = measurementType;
     }
 
     public MicrogridNode getNode() {
         return node;
-    }
-
-    public MicrogridMeasurementType getMeasurementType() {
-        return measurementType;
     }
 }
