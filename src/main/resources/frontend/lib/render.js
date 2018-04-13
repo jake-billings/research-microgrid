@@ -55,6 +55,17 @@
         }
     }
 
+    function _imgForMeasurement(measurement) {
+        if (measurement.measurementType._id === -3) {
+            if (measurement.value) {
+                return 'img/circuit_breaker_open.png';
+            } else {
+                return 'img/circuit_breaker_closed.png';
+            }
+        }
+    }
+
+
     function _levelForNode(node) {
         if (node._id.indexOf('central')>=0) return 1;
         return 2;
@@ -132,13 +143,30 @@
         //Event: nodeSnapshots
         // when we receive a node snapshot, update the node's label
         client.on('nodeSnapshots', function (nodeSnapshots) {
+            if (nodes.length < 1) return;
             nodeSnapshots.forEach(function (snapshot) {
-                nodes.update({
-                    id: snapshot._id,
-                    label: snapshot.measurements.reduce(function (label, measurement) {
-                        return label + +measurement.value + ' ' + measurement.measurementType.unitName + '\n';
-                    },'')
-                });
+                var update = {
+                     id: snapshot._id,
+                     label: snapshot.measurements.reduce(function (label, measurement) {
+                         //By a convention I invented, boolean measurement types will have negative _ids
+                         // and floating point ones will have positive _ids
+                         // if there are more measurement types or this convention is broken, we
+                         // will need to update the logic here
+                         // See MicrogridBooleanMeasurementType and MicrogridFloatMeasurementType
+                         if (measurement.measurementType._id > 0) {
+                             return label + measurement.value + ' ' + measurement.measurementType.unitName + '\n';
+                         } else {
+                             return label + (measurement.value?measurement.measurementType.trueName:measurement.measurementType.falseName) + '\n';
+                         }
+                     },'')
+                 };
+                 snapshot.measurements.forEach(function(measurement) {
+                     var img = _imgForMeasurement(measurement);
+                        if (img) {
+                            update.image = img;
+                        }
+                     });
+                nodes.update(update);
             });
         });
     };

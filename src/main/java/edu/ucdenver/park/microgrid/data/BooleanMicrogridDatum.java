@@ -68,7 +68,6 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
     public boolean getValue() {
         return value;
     }
-
     public MicrogridBooleanMeasurementType getMeasurementType() {
         return measurementType;
     }

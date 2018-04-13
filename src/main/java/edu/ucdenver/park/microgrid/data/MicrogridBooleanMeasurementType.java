@@ -19,9 +19,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum MicrogridBooleanMeasurementType {
-    POTENTIAL(1, "Voltage", "Volts", "V"),
-    CURRENT(2, "Amperage", "Amps", "A"),
-    POWER(3, "Wattage", "Watts", "W");
+    FAULT(-1, "Fault", "Fault", "Nominal"),
+    WARNING(-2, "Warning", "Warning", "Nominal"),
+    CIRCUIT_BREAKER_TRIPPED(-3, "Circuit Breaker", "Open", "Nominal (Closed)");
 
     /**
      * _id
@@ -33,6 +33,8 @@ public enum MicrogridBooleanMeasurementType {
      *
      * by an arbitrary convention I made up, these are negative for boolean measurement types
      *  (as opposed to positive for float types)
+     *
+     * See render.js
      *
      * Ex: -2
      */

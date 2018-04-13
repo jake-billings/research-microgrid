@@ -19,9 +19,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum MicrogridFloatMeasurementType {
-    POTENTIAL(1, "Voltage", "Volts", "V"),
-    CURRENT(2, "Amperage", "Amps", "A"),
-    POWER(3, "Wattage", "Watts", "W");
+    VOLTAGE(1, "Voltage", "Volts", "V", "Potential Difference"),
+    AMPERAGE(2, "Amperage", "Amps", "A", "Current"),
+    WATTAGE(3, "Wattage", "Watts", "W", "Power");
 
     /**
      * _id
@@ -34,6 +34,8 @@ public enum MicrogridFloatMeasurementType {
      * by an arbitrary convention I made up, these are positive for float measurement types
      *  (as opposed to negative for boolean types)
      *
+     * See render.js
+     *
      * Ex: 2
      */
     private final int _id;
@@ -45,9 +47,20 @@ public enum MicrogridFloatMeasurementType {
      *
      * the human-readable name of this measurement
      *
-     * Ex: "Current", "Power"
+     * Ex: "Voltage", "Amperage"
      */
     private final String name;
+
+    /**
+     *  baseUnitType
+     *
+     * String
+     *
+     * the human-readable name of this measurement
+     *
+     * Ex: "Current", "Power"
+     */
+    private final String baseUnitType;
 
     /**
      * unitName
@@ -81,27 +94,28 @@ public enum MicrogridFloatMeasurementType {
      * @param unitName the human-readable unit name "Volts"
      * @param unitAbbreviation "V"
      */
-    MicrogridFloatMeasurementType(int _id, String name, String unitName, String unitAbbreviation) {
+    MicrogridFloatMeasurementType(int _id, String name, String unitName, String unitAbbreviation, String baseUnitType) {
         this._id = _id;
         this.name = name;
         this.unitName = unitName;
         this.unitAbbreviation = unitAbbreviation;
+        this.baseUnitType = baseUnitType;
     }
 
     //----Getters----+
     public int get_id() {
         return this._id;
     }
-
     public String getName() {
         return name;
     }
-
     public String getUnitName() {
         return unitName;
     }
-
     public String getUnitAbbreviation() {
         return unitAbbreviation;
+    }
+    public String getBaseUnitType() {
+        return baseUnitType;
     }
 }

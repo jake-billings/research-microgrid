@@ -77,7 +77,7 @@ public class MicrogridReceiverAgent extends Agent {
         server.init();
 
         //---Add Behaviors---
-        addBehaviour(new ReceiveBehavior(this, 100));
+        addBehaviour(new ReceiveBehavior(this, 10));
         addBehaviour(new ProcessGridGraphStateBehavior(this, 5000));
         addBehaviour(new ProcessGridMeasurementStateBehavior(this, 1000));
 

@@ -115,7 +115,7 @@ public class MicrogridSocketIOServer implements MicrogridGraphHandler, DatumHand
      * @param datum the datum received in the message
      */
     public void onDatum(Datum datum) {
-        server.getBroadcastOperations().sendEvent("datum", datum);
+        //todo implement graph subscriptions
     }
 
     /**

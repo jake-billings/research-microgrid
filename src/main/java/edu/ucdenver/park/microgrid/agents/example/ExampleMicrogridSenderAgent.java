@@ -162,6 +162,14 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
      * <p>
      * <p>
      * Recommended action: add data logging for every node you intend to measure
+     * <p>
+     * a note on period:
+     * when generating a dummy 1HZ sine wave and sampling at 1/2000ms, I found that the sine value appeared
+     * to stay the same due to the harmonic interaction of the TickerBehavior and the wave. If  you are sampling waves,
+     * I recommend picking a prime number that is far smaller than the period of the wave.
+     * <p>
+     * However, keep in mind that this period must also be much lower than the blocking time of the receiver agent, or
+     * you will find errors due to the queue filling up
      */
     protected void setup() {
         super.setup();
@@ -182,7 +190,7 @@ public class ExampleMicrogridSenderAgent extends MicrogridSenderAgent {
                                 //Tell the Datum which node measured it
                                 node,
                                 //Pretend we're measuring voltage
-                               MicrogridFloatMeasurementType.POTENTIAL,
+                                MicrogridFloatMeasurementType.VOLTAGE,
                                 //Provide a dummy value for the measurement
                                 15.0F));
             }
