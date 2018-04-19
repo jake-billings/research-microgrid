@@ -100,10 +100,12 @@ public class DummyTestScenarioARemote extends MicrogridSenderAgent {
     protected void setup() {
         super.setup();
 
-        addBehaviour(new TickerBehaviour(this, 311) {
+        addBehaviour(new TickerBehaviour(this, 100) {
             @Override
             protected void onTick() {
                 MicrogridNode node = getSubgraph().getNodes().iterator().next();
+
+                System.out.println(DummyPhysicalController.getAmperage());
 
                 sendDatum(
                         new FloatMicrogridDatum(
@@ -111,36 +113,66 @@ public class DummyTestScenarioARemote extends MicrogridSenderAgent {
                                 g,
                                 MicrogridFloatMeasurementType.VOLTAGE,
                                 DummyPhysicalController.getVoltage()));
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.AMPERAGE,
                                 DummyPhysicalController.getAmperage()));
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.WATTAGE,
                                 DummyPhysicalController.getWattage()));
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridBooleanMeasurementType.FAULT,
                                 DummyPhysicalController.isFault()));
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridBooleanMeasurementType.WARNING,
                                 DummyPhysicalController.isWarning()));
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 gBreaker,
                                 MicrogridBooleanMeasurementType.CIRCUIT_BREAKER_TRIPPED,
                                 DummyPhysicalController.isCircuitBreakerOpen()));
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -160,7 +192,7 @@ public class DummyTestScenarioARemote extends MicrogridSenderAgent {
         }
 
         public static float getAmperage() {
-            return (float) Math.sin(System.currentTimeMillis() * 6.283185 / 1000) * 10L;
+            return (float) Math.sin(System.currentTimeMillis() * 6.283185 / 10000) * 10L;
         }
 
         public static float getWattage() {
