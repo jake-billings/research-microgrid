@@ -79,7 +79,7 @@ public class MicrogridReceiverAgent extends Agent {
         //---Add Behaviors---
         addBehaviour(new ReceiveBehavior(this, 10));
         addBehaviour(new ProcessGridGraphStateBehavior(this, 5000));
-        addBehaviour(new ProcessGridMeasurementStateBehavior(this, 1000));
+        addBehaviour(new ProcessGridMeasurementStateBehavior(this, 701)); //make sure this period is prime and small (see not in constructor docs)
 
         //---Final Linking---
         //Pass datum events from the liveGrid to the SocketIO server
@@ -182,6 +182,12 @@ public class MicrogridReceiverAgent extends Agent {
      * the purpose of this behavior is to recompute the current microgrid graph measurement state state and send it to
      * SocketIO clients at a regular interval instead of immediately when receiving updates
      * this reduces CPU load when we have many sender agents sending us data all at the same time
+     *
+     * Node on period:
+     *  this process runs every "period" milliseconds. this is configured in the constructor that creates this behavior
+     *  if you are measuring wave forms, make sure to use a prime number that is far smaller than the wavelength of
+     *  the wave if you wish to see changes in the values in the client display. if the wave period and the measurement
+     *  period share factors, you may see misleading values on the client
      */
     private class ProcessGridMeasurementStateBehavior extends TickerBehaviour {
         ProcessGridMeasurementStateBehavior(Agent a, long period) {
