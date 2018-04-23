@@ -67,7 +67,7 @@
 
 
     function _levelForNode(node) {
-        if (node._id.indexOf('central')>=0) return 1;
+        if (node._id.indexOf('central') >= 0) return 1;
         return 2;
     }
 
@@ -88,8 +88,7 @@
             nodes: nodes,
             edges: edges
         };
-        var options = {
-        };
+        var options = {};
         var network = new vis.Network(target, data, options);
 
         //Event: grid
@@ -146,27 +145,61 @@
             if (nodes.length < 1) return;
             nodeSnapshots.forEach(function (snapshot) {
                 var update = {
-                     id: snapshot._id,
-                     label: snapshot.measurements.reduce(function (label, measurement) {
-                         //By a convention I invented, boolean measurement types will have negative _ids
-                         // and floating point ones will have positive _ids
-                         // if there are more measurement types or this convention is broken, we
-                         // will need to update the logic here
-                         // See MicrogridBooleanMeasurementType and MicrogridFloatMeasurementType
-                         if (measurement.measurementType._id > 0) {
-                             return label + measurement.value + ' ' + measurement.measurementType.unitName + '\n';
-                         } else {
-                             return label + (measurement.value?measurement.measurementType.trueName:measurement.measurementType.falseName) + '\n';
-                         }
-                     },'')
-                 };
-                 snapshot.measurements.forEach(function(measurement) {
-                     var img = _imgForMeasurement(measurement);
-                        if (img) {
-                            update.image = img;
+                    id: snapshot._id,
+                    label: snapshot.measurements.reduce(function (label, measurement) {
+                        //By a convention I invented, boolean measurement types will have negative _ids
+                        // and floating point ones will have positive _ids
+                        // if there are more measurement types or this convention is broken, we
+                        // will need to update the logic here
+                        // See MicrogridBooleanMeasurementType and MicrogridFloatMeasurementType
+                        if (measurement.measurementType._id > 0) {
+                            return label + measurement.value + ' ' + measurement.measurementType.unitName + '\n';
+                        } else {
+                            return label + (measurement.value ? measurement.measurementType.trueName : measurement.measurementType.falseName) + '\n';
                         }
-                     });
+                    }, '')
+                };
+                snapshot.measurements.forEach(function (measurement) {
+                    var img = _imgForMeasurement(measurement);
+                    if (img) {
+                        update.image = img;
+                    }
+                });
                 nodes.update(update);
+
+                //---Update Arrow Directions Based on Current Flow---
+                //By convention, edges should point away from nodes with positive current and towards
+                // nodes with negative current
+                // If an edge points away from a node, and the node has negative current, the edge is wrong; flip it
+                // If an edge points towards a node, and the node has positive current, the edge is wrong; flip it
+                edges.forEach(function (edge) {
+                    if (edge.from === snapshot._id) {
+                        snapshot.measurements.forEach(function (measurement) {
+                            if (measurement.measurementType.baseUnitType === 'Current') {
+                                if (measurement.value < 0) {
+                                    edges.update({
+                                        id: edge.id,
+                                        to: edge.from,
+                                        from: edge.to
+                                    })
+                                }
+                            }
+                        });
+                    }
+                    if (edge.to === snapshot._id) {
+                        snapshot.measurements.forEach(function (measurement) {
+                            if (measurement.measurementType.baseUnitType === 'Current') {
+                                if (measurement.value > 0) {
+                                    edges.update({
+                                        id: edge.id,
+                                        to: edge.from,
+                                        from: edge.to
+                                    })
+                                }
+                            }
+                        });
+                    }
+                });
             });
         });
     };
