@@ -11,11 +11,14 @@ import edu.ucdenver.park.microgrid.message.MicrogridDatumMessage;
 import edu.ucdenver.park.microgrid.message.MicrogridGraphMessage;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * MicrogridSenderAgent
@@ -27,6 +30,9 @@ import java.io.Serializable;
  * MicrogridSenderAgent is a superclass/example for agents that want to send data to the MicrogridReceiver agent
  * MicrogridSenderAgents send MicrogridGraphMessages periodically
  * MicrogridSenderAgents send MicrogridDatumMessages as data becomes available
+ * <p>
+ * implements a message send queue and send behavior instead of direct sending; this was necessary because repeated
+ * send requests over a network caused reliability issues
  * <p>
  * How to use:
  * subclass this agent
@@ -63,6 +69,8 @@ public abstract class MicrogridSenderAgent extends Agent {
      */
     private final long gridUpdatePeriod;
 
+    private final BlockingQueue<ACLMessage> jadeMessageSendQueue;
+
     /**
      * MicrogridSenderAgent()
      * <p>
@@ -75,10 +83,14 @@ public abstract class MicrogridSenderAgent extends Agent {
      */
     public MicrogridSenderAgent(AID receiver, MicrogridGraph subgraph, long gridUpdatePeriod) {
         this.setSubgraph(subgraph);
-        if (receiver == null) throw new IllegalArgumentException("receiver cannot be null when creating MicrogridSenderAgent");
-        if (gridUpdatePeriod < 1000) throw new IllegalArgumentException("gridUpdatePeriod cannot be less than 1000 when creating MicrogridSenderAgent");
+        if (receiver == null)
+            throw new IllegalArgumentException("receiver cannot be null when creating MicrogridSenderAgent");
+        if (gridUpdatePeriod < 1000)
+            throw new IllegalArgumentException("gridUpdatePeriod cannot be less than 1000 when creating MicrogridSenderAgent");
         this.receiver = receiver;
         this.gridUpdatePeriod = gridUpdatePeriod;
+
+        this.jadeMessageSendQueue = new LinkedBlockingQueue<ACLMessage>(20);
     }
 
     /**
@@ -94,6 +106,7 @@ public abstract class MicrogridSenderAgent extends Agent {
 
         //---Add Behaviors---
         addBehaviour(new SendMicrogridGraphMessageBehavior(this, this.gridUpdatePeriod, 2000));
+        addBehaviour(new SendJadeMessagesBehavior(this, 1));
 
         //---Completion Message---
         //Print a message that we finished setting up
@@ -106,6 +119,10 @@ public abstract class MicrogridSenderAgent extends Agent {
      * <p>
      * sends a Datum object to the receiver agent via JADE messaging
      * (catches exceptions for ease of use and consistency with SendMicrogridGraphMessageBehavior behavior)
+     * <p>
+     * note: this doesn't "actually" send the datum; it calls sendObjectMessage()
+     * sendObjectMessage() doesn't "actually" send it either; it adds it to the message send queue,
+     * and the send behavior sends it
      *
      * @param d the datum object to send
      */
@@ -132,7 +149,15 @@ public abstract class MicrogridSenderAgent extends Agent {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setContentObject(content);
         msg.addReceiver(receiver);
-        send(msg);
+
+        //Try to add the message to the send queue; if it doesn't work, the queue is full
+        // if the queue is full, there's a problem. we're not gonna get all the data through
+        // we know new data is the priority, so clear the queue and add our message
+        if (!jadeMessageSendQueue.offer(msg)) {
+            System.out.println("Warning: Sender had to dump send queue");
+            jadeMessageSendQueue.clear();
+            jadeMessageSendQueue.add(msg);
+        }
     }
 
     //----Getters and Setters----
@@ -190,6 +215,47 @@ public abstract class MicrogridSenderAgent extends Agent {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * SendJadeMessagesBehavior
+     * <p>
+     * the behavior take "ACLMessage" elements from the jade message queue and sends them using jade messages
+     * <p>
+     * use sendObjectMessage() to add jade messages to this queue
+     */
+    private class SendJadeMessagesBehavior extends CyclicBehaviour {
+        /**
+         * blockingTime
+         * <p>
+         * long
+         * <p>
+         * the amount of time to block for between sending messages
+         *  lower = faster speed but higher risk of clogging receiving buffer
+         *  higher = less CPU usage on this machine but lower throughput/higher risk of buffer overflow
+         */
+        private final long blockingTime;
+
+        /**
+         * SendJadeMessagesBehavior()
+         *
+         * constructor
+         *
+         * @param a the agent (this)
+         * @param blockingTime see blockingTime docs
+         */
+        public SendJadeMessagesBehavior(Agent a, long blockingTime) {
+            super(a);
+            this.blockingTime = blockingTime;
+        }
+
+        @Override
+        public void action() {
+            if (jadeMessageSendQueue.size() > 0) {
+                send(jadeMessageSendQueue.remove());
+            }
+            block(this.blockingTime);
         }
     }
 }

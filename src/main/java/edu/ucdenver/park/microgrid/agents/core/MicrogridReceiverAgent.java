@@ -14,6 +14,9 @@ import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * MicrogridReceiverAgent
  * <p>
@@ -64,6 +67,24 @@ public class MicrogridReceiverAgent extends Agent {
     private MicrogridSocketIOServer server = new MicrogridSocketIOServer(liveGrid, (short) 4000);
 
     /**
+     * jadeMessageReceiveQueue
+     * <p>
+     * BlockingQueue<ACLMessage>
+     * <p>
+     * when we receive message from JADE, we add them to this queue for processing
+     * <p>
+     * they are processed in a separate behavior
+     * <p>
+     * the parameter to the LinkedBlockingQueue constructor is the queue capacity; if the number of queued messages
+     * for processing exceeds this amount, we give up, clear the queue, and start over
+     * <p>
+     * this prevents us from getting behind on our processing and lagging farther and farther behind from reality
+     * <p>
+     * I chose 20 arbitrarily; this number can be tuned to optimize performance
+     */
+    private final BlockingQueue<ACLMessage> jadeMessageReceiveQueue = new LinkedBlockingQueue<ACLMessage>(20);
+
+    /**
      * setup()
      * <p>
      * setup this data receiver object by starting the Socket.IO server
@@ -77,7 +98,8 @@ public class MicrogridReceiverAgent extends Agent {
         server.init();
 
         //---Add Behaviors---
-        addBehaviour(new ReceiveBehavior(this, 10));
+        addBehaviour(new ReceiveBehavior());
+        addBehaviour(new ProcessIncomingMessageBehavior(this, 1));
         addBehaviour(new ProcessGridGraphStateBehavior(this, 5000));
         addBehaviour(new ProcessGridMeasurementStateBehavior(this, 701)); //make sure this period is prime and small (see not in constructor docs)
 
@@ -98,37 +120,66 @@ public class MicrogridReceiverAgent extends Agent {
      * private internal class: this class exists INSIDE the MicrogridReceiverAgent class and is private to it (it is used only in setup())
      * behavior: this a JADE behavior class
      * <p>
-     * This CyclicBehavior continuously reads messages via JADE's messaging system and passes the messages
-     * back into LiveMicrogridGraph
+     * This CyclicBehavior continuously reads messages via JADE's messaging system and passes the messages to our queue,
+     * which we manage; if the queue fills up, we clear it and start adding new data
+     * <p>
+     * the behavior ProcessIncomingMessageBehavior manages messages from the incoming message queue
      */
     private class ReceiveBehavior extends CyclicBehaviour {
+
+        public void action() {
+            ACLMessage msg;
+            while ((msg = receive()) != null) {
+                if (!jadeMessageReceiveQueue.offer(msg)) {
+                    System.out.println("Warning: Receiver had to dump incoming message queue");
+                    jadeMessageReceiveQueue.clear();
+                    jadeMessageReceiveQueue.add(msg);
+                }
+            }
+            block(1);
+        }
+    }
+
+    /**
+     * ProcessIncomingMessageBehavior
+     * <p>
+     * class
+     * private internal class: this class exists
+     * <p>
+     * this behavior continuously processes the top element of the incoming messaging queue
+     * maintaining our own queue prevents us from falling behind on processing
+     *
+     * this behavior can be "tuned" for CPU performance
+     */
+    private class ProcessIncomingMessageBehavior extends CyclicBehaviour {
         /**
          * blockTime
-         *
+         * <p>
          * long
-         *
+         * <p>
          * this is the parameter to block() that dictates how long we wait between reading messages
-         *  this helps us not peg the CPU while reading our messages but slows down our message
-         *  processing ability
-         *
+         * this helps us not peg the CPU while reading our messages but slows down our message
+         * processing ability
+         * <p>
          * higher blockTime: better cpu performance/slower message processing/higher risk of queue overflow
          * lower blockTime: worse cpu performance/faster message processing/lower risk of queue overflow
-         *
+         * <p>
          * this number should be significantly lower than the time interval between repeating messages
-         *  that the sender will receive
-         *
+         * that the sender will receive
+         * <p>
          * E.g. if message send ever 10,000 ms, this should be 1,000 ms or less
          */
         private final long blockTime;
 
-        ReceiveBehavior(Agent a, long blockTime) {
+        ProcessIncomingMessageBehavior(Agent a, long blockTime) {
             super(a);
             this.blockTime = blockTime;
         }
 
         public void action() {
-            ACLMessage msg = receive();
-            if (msg != null) {
+            ACLMessage msg;
+
+            if ((msg = jadeMessageReceiveQueue.poll()) != null) {
                 try {
                     Object contentObject = msg.getContentObject();
                     if (contentObject instanceof MicrogridGraphMessage) {
@@ -142,6 +193,7 @@ public class MicrogridReceiverAgent extends Agent {
                     e.printStackTrace();
                 }
             }
+
             block(this.blockTime);
         }
     }
@@ -182,12 +234,12 @@ public class MicrogridReceiverAgent extends Agent {
      * the purpose of this behavior is to recompute the current microgrid graph measurement state state and send it to
      * SocketIO clients at a regular interval instead of immediately when receiving updates
      * this reduces CPU load when we have many sender agents sending us data all at the same time
-     *
+     * <p>
      * Node on period:
-     *  this process runs every "period" milliseconds. this is configured in the constructor that creates this behavior
-     *  if you are measuring wave forms, make sure to use a prime number that is far smaller than the wavelength of
-     *  the wave if you wish to see changes in the values in the client display. if the wave period and the measurement
-     *  period share factors, you may see misleading values on the client
+     * this process runs every "period" milliseconds. this is configured in the constructor that creates this behavior
+     * if you are measuring wave forms, make sure to use a prime number that is far smaller than the wavelength of
+     * the wave if you wish to see changes in the values in the client display. if the wave period and the measurement
+     * period share factors, you may see misleading values on the client
      */
     private class ProcessGridMeasurementStateBehavior extends TickerBehaviour {
         ProcessGridMeasurementStateBehavior(Agent a, long period) {
