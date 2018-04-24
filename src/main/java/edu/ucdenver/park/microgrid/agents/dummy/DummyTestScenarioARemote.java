@@ -113,66 +113,36 @@ public class DummyTestScenarioARemote extends MicrogridSenderAgent {
                                 g,
                                 MicrogridFloatMeasurementType.VOLTAGE,
                                 DummyPhysicalController.getVoltage()));
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.AMPERAGE,
                                 DummyPhysicalController.getAmperage()));
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.WATTAGE,
                                 DummyPhysicalController.getWattage()));
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridBooleanMeasurementType.FAULT,
                                 DummyPhysicalController.isFault()));
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridBooleanMeasurementType.WARNING,
                                 DummyPhysicalController.isWarning()));
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 gBreaker,
                                 MicrogridBooleanMeasurementType.CIRCUIT_BREAKER_TRIPPED,
                                 DummyPhysicalController.isCircuitBreakerOpen()));
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         });
     }
