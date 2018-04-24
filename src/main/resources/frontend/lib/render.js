@@ -154,6 +154,10 @@
         client.on('nodeSnapshots', function (nodeSnapshots) {
             if (nodes.length < 1) return;
             nodeSnapshots.forEach(function (snapshot) {
+                //ignore snapshots for nodes we don't have graph data for
+                // sometimes we get snapshots before the graph updats
+                if (!nodes.get(snapshot._id)) return;
+
                 var update = {
                     id: snapshot._id,
                     label: snapshot.measurements.reduce(function (label, measurement) {
