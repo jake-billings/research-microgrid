@@ -89,6 +89,12 @@
             edges: edges
         };
         var options = {
+            nodes: {
+                font: {
+                    //Increase the font size of labels for readability
+                    size: 18
+                }
+            }
             //arrows are configured on an edge by edge basis in 'grid' and in 'nodeSnapshots'
         };
         var network = new vis.Network(target, data, options);
