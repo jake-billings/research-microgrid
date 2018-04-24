@@ -88,7 +88,9 @@
             nodes: nodes,
             edges: edges
         };
-        var options = {};
+        var options = {
+            //arrows are configured on an edge by edge basis in 'grid' and in 'nodeSnapshots'
+        };
         var network = new vis.Network(target, data, options);
 
         //Event: grid
@@ -133,7 +135,9 @@
                         id: edge._id,
                         from: edge.from,
                         to: edge.to,
-                        arrows: 'to'
+                        arrows: {
+                            to: {enabled: false}
+                        } //edges initially have no direction; see "update arrow directions" in nodeSnapshots event
                     }
                 }));
             }
@@ -173,32 +177,40 @@
                 // If an edge points away from a node, and the node has negative current, the edge is wrong; flip it
                 // If an edge points towards a node, and the node has positive current, the edge is wrong; flip it
                 edges.forEach(function (edge) {
-                    if (edge.from === snapshot._id) {
                         snapshot.measurements.forEach(function (measurement) {
                             if (measurement.measurementType.baseUnitType === 'Current') {
-                                if (measurement.value < 0) {
+                                if (measurement.value == 0) {
                                     edges.update({
                                         id: edge.id,
-                                        to: edge.from,
-                                        from: edge.to
-                                    })
+                                        arrows: {
+                                              to: {enabled: false}
+                                          }
+                                    });
+                                } else if (edge.from === snapshot._id) {
+                                            if (measurement.value < 0) {
+                                                edges.update({
+                                                    id: edge.id,
+                                                    to: edge.from,
+                                                    from: edge.to,
+                                                    arrows: {
+                                                        to: {scaleFactor: 1, enabled: true}
+                                                    }
+                                                });
+                                            }
+                                } else if (edge.to === snapshot._id) {
+                                    if (measurement.value > 0) {
+                                        edges.update({
+                                            id: edge.id,
+                                            to: edge.from,
+                                            from: edge.to,
+                                            arrows: {
+                                                  to: {scaleFactor: 1, enabled: true}
+                                              }
+                                        });
+                                    }
                                 }
-                            }
-                        });
-                    }
-                    if (edge.to === snapshot._id) {
-                        snapshot.measurements.forEach(function (measurement) {
-                            if (measurement.measurementType.baseUnitType === 'Current') {
-                                if (measurement.value > 0) {
-                                    edges.update({
-                                        id: edge.id,
-                                        to: edge.from,
-                                        from: edge.to
-                                    })
-                                }
-                            }
-                        });
-                    }
+                             }
+                         });
                 });
             });
         });
