@@ -18,6 +18,9 @@
  *
  * listens for the "grid" event
  *
+ * we chose to ignore the directed graph data from the server and update the graph with our own
+ *  directionality, which is based on current/amperage readings from nodeSnapshots events
+ *
  * see render.css
  */
 (function (root, factory) {
@@ -88,12 +91,23 @@
             nodes: nodes,
             edges: edges
         };
-        var options = {};
+        var options = {
+            nodes: {
+                font: {
+                    //Increase the font size of labels for readability
+                    size: 18
+                }
+            }
+            //arrows are configured on an edge by edge basis in 'grid' and in 'nodeSnapshots'
+        };
         var network = new vis.Network(target, data, options);
 
         //Event: grid
         // when we receive new grid graph data, check if it changed
         // if it did, redraw the grid with the new data
+        //
+        //we chose to ignore the directed graph data from the server and update the graph with our own
+        //  directionality, which is based on current/amperage readings from nodeSnapshots events
         client.on('grid', function (grid) {
             //---Check if the graph changed by comparing the new/old nodes/edges--
             var oldNodeIds = nodes.getIds();
@@ -133,7 +147,9 @@
                         id: edge._id,
                         from: edge.from,
                         to: edge.to,
-                        arrows: 'to'
+                        arrows: {
+                            to: {enabled: false}
+                        } //edges initially have no direction; see "update arrow directions" in nodeSnapshots event
                     }
                 }));
             }
@@ -144,6 +160,10 @@
         client.on('nodeSnapshots', function (nodeSnapshots) {
             if (nodes.length < 1) return;
             nodeSnapshots.forEach(function (snapshot) {
+                //ignore snapshots for nodes we don't have graph data for
+                // sometimes we get snapshots before the graph updats
+                if (!nodes.get(snapshot._id)) return;
+
                 var update = {
                     id: snapshot._id,
                     label: snapshot.measurements.reduce(function (label, measurement) {
@@ -170,35 +190,44 @@
                 //---Update Arrow Directions Based on Current Flow---
                 //By convention, edges should point away from nodes with positive current and towards
                 // nodes with negative current
+                // If current is 0, remove the arrow from the edge (and don't update its direction)
                 // If an edge points away from a node, and the node has negative current, the edge is wrong; flip it
                 // If an edge points towards a node, and the node has positive current, the edge is wrong; flip it
                 edges.forEach(function (edge) {
-                    if (edge.from === snapshot._id) {
                         snapshot.measurements.forEach(function (measurement) {
                             if (measurement.measurementType.baseUnitType === 'Current') {
-                                if (measurement.value < 0) {
+                                if (measurement.value == 0) {
                                     edges.update({
                                         id: edge.id,
-                                        to: edge.from,
-                                        from: edge.to
-                                    })
+                                        arrows: {
+                                              to: {enabled: false}
+                                          }
+                                    });
+                                } else if (edge.from === snapshot._id) {
+                                            if (measurement.value < 0) {
+                                                edges.update({
+                                                    id: edge.id,
+                                                    to: edge.from,
+                                                    from: edge.to,
+                                                    arrows: {
+                                                        to: {scaleFactor: 1, enabled: true}
+                                                    }
+                                                });
+                                            }
+                                } else if (edge.to === snapshot._id) {
+                                    if (measurement.value > 0) {
+                                        edges.update({
+                                            id: edge.id,
+                                            to: edge.from,
+                                            from: edge.to,
+                                            arrows: {
+                                                  to: {scaleFactor: 1, enabled: true}
+                                              }
+                                        });
+                                    }
                                 }
-                            }
-                        });
-                    }
-                    if (edge.to === snapshot._id) {
-                        snapshot.measurements.forEach(function (measurement) {
-                            if (measurement.measurementType.baseUnitType === 'Current') {
-                                if (measurement.value > 0) {
-                                    edges.update({
-                                        id: edge.id,
-                                        to: edge.from,
-                                        from: edge.to
-                                    })
-                                }
-                            }
-                        });
-                    }
+                             }
+                         });
                 });
             });
         });
