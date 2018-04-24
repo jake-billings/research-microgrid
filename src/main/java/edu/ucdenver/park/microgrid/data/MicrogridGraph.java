@@ -14,6 +14,10 @@ import java.util.Set;
  * <p>
  * class
  * <p>
+ * By design choice, this class shall represent a directed microgrid graph.
+ *  However, throughout this application, we ignore the directed nature of this graph and treat it as undirected.
+ *  The UI (in render.js) modifies the directionality of graphs based on nodeSnapshots (current measurements)
+ * <p>
  * immutable
  * <p>
  * subclass of Edge with microgrid-specific data
@@ -24,13 +28,14 @@ public class MicrogridGraph extends Graph<MicrogridEdge, MicrogridNode> {
     public MicrogridGraph(String _id) {
         super(_id, new HashSet<MicrogridEdge>(), new HashSet<MicrogridNode>());
     }
+
     public MicrogridGraph(String _id, Set<MicrogridEdge> edges, Set<MicrogridNode> nodes) {
         super(_id, edges, nodes);
     }
 
     /**
      * union()
-     *
+     * <p>
      * overrides the union function with a typecast for all specific MicrogridGraph objects
      *
      * @param newId the new graph must have a unique _id, since everything is an Entity. This is the _id we give the new object
@@ -39,6 +44,6 @@ public class MicrogridGraph extends Graph<MicrogridEdge, MicrogridNode> {
      */
     public MicrogridGraph union(String newId, MicrogridGraph other) {
         Graph rawUnion = super.union(newId, other);
-        return new MicrogridGraph(newId, (Set<MicrogridEdge>) rawUnion.getEdges(), (Set<MicrogridNode>) rawUnion.getNodes()) ;
+        return new MicrogridGraph(newId, (Set<MicrogridEdge>) rawUnion.getEdges(), (Set<MicrogridNode>) rawUnion.getNodes());
     }
 }

@@ -18,6 +18,9 @@
  *
  * listens for the "grid" event
  *
+ * we chose to ignore the directed graph data from the server and update the graph with our own
+ *  directionality, which is based on current/amperage readings from nodeSnapshots events
+ *
  * see render.css
  */
 (function (root, factory) {
@@ -102,6 +105,9 @@
         //Event: grid
         // when we receive new grid graph data, check if it changed
         // if it did, redraw the grid with the new data
+        //
+        //we chose to ignore the directed graph data from the server and update the graph with our own
+        //  directionality, which is based on current/amperage readings from nodeSnapshots events
         client.on('grid', function (grid) {
             //---Check if the graph changed by comparing the new/old nodes/edges--
             var oldNodeIds = nodes.getIds();
@@ -184,6 +190,7 @@
                 //---Update Arrow Directions Based on Current Flow---
                 //By convention, edges should point away from nodes with positive current and towards
                 // nodes with negative current
+                // If current is 0, remove the arrow from the edge (and don't update its direction)
                 // If an edge points away from a node, and the node has negative current, the edge is wrong; flip it
                 // If an edge points towards a node, and the node has positive current, the edge is wrong; flip it
                 edges.forEach(function (edge) {

@@ -15,6 +15,7 @@ import java.util.Set;
  * immutable
  *
  * By design choice, this class shall represent a directed graph.
+ *  However, throughout this application, we ignore the directed nature of this graph and treat it as undirected.
  *
  * A graph contains a set of edges and nodes. This class represents a node.
  *  http://mathworld.wolfram.com/Graph.html
