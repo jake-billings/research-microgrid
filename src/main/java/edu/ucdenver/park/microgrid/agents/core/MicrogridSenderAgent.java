@@ -14,9 +14,14 @@ import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -129,7 +134,7 @@ public abstract class MicrogridSenderAgent extends Agent {
     protected void sendDatum(MicrogridDatum d) {
         try {
             sendObjectMessage(new MicrogridDatumMessage(d), this.receiver);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -140,12 +145,17 @@ public abstract class MicrogridSenderAgent extends Agent {
      * sends the "content" object to the agent identified by the AID receiver via JADE messaging
      * <p>
      * called by SendMicrogridGraphMessageBehavior and sendDatum
+     * <p>
+     * adds the content as an ACLMessage to the message send queue (which is sent by the message send behavior)
+     * if the queue is full, we filter out all the data messages and try to add it
+     * if it's still full, we filter out all other message and it it
+     * this prioritizes graph messages, which are infrequent but critical
      *
      * @param content  object to send
      * @param receiver agent id of the target receiver (usually this.receiver)
      * @throws IOException throws IOException because serialization could fail
      */
-    private void sendObjectMessage(Serializable content, AID receiver) throws IOException {
+    private void sendObjectMessage(Serializable content, AID receiver) throws IOException, UnreadableException {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
         msg.setContentObject(content);
         msg.addReceiver(receiver);
@@ -155,8 +165,21 @@ public abstract class MicrogridSenderAgent extends Agent {
         // we know new data is the priority, so clear the queue and add our message
         if (!jadeMessageSendQueue.offer(msg)) {
             System.out.println("Warning: Sender had to dump send queue");
+            Collection<ACLMessage> graphMessages = new HashSet<ACLMessage>();
+            Iterator<ACLMessage> iter = jadeMessageSendQueue.iterator();
+            while (iter.hasNext()) {
+                ACLMessage queuedMessage = iter.next();
+                Serializable contentObject = queuedMessage.getContentObject();
+                if (contentObject instanceof MicrogridGraphMessage) {
+                    graphMessages.add(queuedMessage);
+                }
+            }
             jadeMessageSendQueue.clear();
-            jadeMessageSendQueue.add(msg);
+            jadeMessageSendQueue.addAll(graphMessages);
+            if (!jadeMessageSendQueue.offer(msg)) {
+                jadeMessageSendQueue.clear();
+                jadeMessageSendQueue.add(msg);
+            }
         }
     }
 
@@ -212,7 +235,7 @@ public abstract class MicrogridSenderAgent extends Agent {
         protected void onTick() {
             try {
                 sendObjectMessage(new MicrogridGraphMessage(getSubgraph(), System.currentTimeMillis() + getPeriod() + bufferTimeMillis), receiver);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -232,17 +255,17 @@ public abstract class MicrogridSenderAgent extends Agent {
          * long
          * <p>
          * the amount of time to block for between sending messages
-         *  lower = faster speed but higher risk of clogging receiving buffer
-         *  higher = less CPU usage on this machine but lower throughput/higher risk of buffer overflow
+         * lower = faster speed but higher risk of clogging receiving buffer
+         * higher = less CPU usage on this machine but lower throughput/higher risk of buffer overflow
          */
         private final long blockingTime;
 
         /**
          * SendJadeMessagesBehavior()
-         *
+         * <p>
          * constructor
          *
-         * @param a the agent (this)
+         * @param a            the agent (this)
          * @param blockingTime see blockingTime docs
          */
         public SendJadeMessagesBehavior(Agent a, long blockingTime) {
