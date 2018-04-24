@@ -2,7 +2,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE', which is part of this source code package.
  */
-package edu.ucdenver.park.microgrid.agents.dummy;
+package edu.ucdenver.park.microgrid.agents.dummy.old;
 
 import edu.ucdenver.park.microgrid.agents.core.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.*;
@@ -47,16 +47,19 @@ public class DummyCentralMicrogridSenderAgent extends MicrogridSenderAgent {
         MicrogridNode centralHubA = new MicrogridNode("microgrid-node-central-a-hub", MicrogridNodeType.HUB);
         MicrogridNode centralHubB = new MicrogridNode("microgrid-node-central-b-hub", MicrogridNodeType.HUB);
         MicrogridNode centralHubC = new MicrogridNode("microgrid-node-central-c-hub", MicrogridNodeType.HUB);
+        MicrogridNode centralHubD = new MicrogridNode("microgrid-node-central-d-hub", MicrogridNodeType.HUB);
 
         //Add nodes to set
         nodes.add(centralHubA);
         nodes.add(centralHubB);
         nodes.add(centralHubC);
+        nodes.add(centralHubD);
 
         //Edges
         edges.add(new MicrogridEdge("microgrid-edge-central-ab", centralHubA, centralHubB, MicrogridEdgeType.BUS));
         edges.add(new MicrogridEdge("microgrid-edge-central-bc", centralHubB, centralHubC, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-central-ca", centralHubC, centralHubA, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-cd", centralHubC, centralHubD, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-da", centralHubD, centralHubA, MicrogridEdgeType.BUS));
 
         return new MicrogridGraph("microgrid-graph-subgraph-central", edges, nodes);
     }
@@ -87,5 +90,25 @@ public class DummyCentralMicrogridSenderAgent extends MicrogridSenderAgent {
      */
     protected void setup() {
         super.setup();
+
+        addBehaviour(new TickerBehaviour(this, 2000) {
+            @Override
+            protected void onTick() {
+                MicrogridNode node = getSubgraph().getNodes().iterator().next();
+
+                //This is an old of how to properly send a measurement to the server assuming you have a node
+                sendDatum(
+                        //Create a FloatMicrogridDatum object to hold the measurement
+                        new FloatMicrogridDatum(
+                                //Timestamp the datum with the current number of milliseconds from Jan 1st, 1970
+                                System.currentTimeMillis(),
+                                //Tell the Datum which node measured it
+                                node,
+                                //Pretend we're measuring voltage
+                               MicrogridFloatMeasurementType.VOLTAGE,
+                                //Provide a dummy value for the measurement
+                                15.0F));
+            }
+        });
     }
 }

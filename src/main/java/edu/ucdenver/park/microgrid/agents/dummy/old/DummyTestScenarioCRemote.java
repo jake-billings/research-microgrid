@@ -2,7 +2,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE', which is part of this source code package.
  */
-package edu.ucdenver.park.microgrid.agents.dummy;
+package edu.ucdenver.park.microgrid.agents.dummy.old;
 
 import edu.ucdenver.park.microgrid.agents.core.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.*;
@@ -13,42 +13,38 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * DummyControllerAMicrogridSenderAgent
+ * DummyTestScenario
  * <p>
  * class: JADE agent
  * <p>
  * this is a MicrogridSenderAgent that uses dummy microgrid data
  * <p>
+ * this agent implements a specific test case from Dr. Park (180406 Data definition.docx)
+ * <p>
  * See ExampleMicrogridSenderAgent for more documentation
  *
  * @author Jake Billings
  */
-public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
+public class DummyTestScenarioCRemote extends MicrogridSenderAgent {
     /**
      * makeReceiverAID()
      *
      * @return an AID pointing to the agent that will receive the data we send
      */
     private static AID makeReceiverAID() {
-        return new AID("ReceiverAgent", AID.ISLOCALNAME);
+        AID aid = new AID("ReceiverAgent@10.20.102.203:1100/JADE", AID.ISGUID);
+        aid.addAddresses("http://NC2611-PC-16.ucdenver.pvt:7778/acc");
+        return aid;
     }
 
-    //Dummy Controller
-    private static DummyPhysicalController controller = DummyPhysicalController.getInstance();
 
     //Nodes
-    private static MicrogridNode g = new MicrogridNode("microgrid-node-a-g", MicrogridNodeType.GENERATOR);
-    private static MicrogridNode b = new MicrogridNode("microgrid-node-a-b", MicrogridNodeType.BATTERY);
-    private static MicrogridNode l = new MicrogridNode("microgrid-node-a-l", MicrogridNodeType.LOAD);
-    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-a-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode bBreaker = new MicrogridNode("microgrid-node-a-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode lBreaker = new MicrogridNode("microgrid-node-a-l-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode ourHub = new MicrogridNode("micrgrid-node-a-hub", MicrogridNodeType.HUB);
-    private static MicrogridNode ourBreaker = new MicrogridNode("microgrid-node-a-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode centralHub = new MicrogridNode("microgrid-node-central-a-hub", MicrogridNodeType.HUB);
-    
+    //Declared statically so that they can be accessed by the constructor and by the data sending behavior
+    private static MicrogridNode g = new MicrogridNode("microgrid-node-test-c-g", MicrogridNodeType.GENERATOR);
+    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-test-c-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode ourHub = new MicrogridNode("micrgrid-node-c-hub", MicrogridNodeType.HUB);
+
     /**
-     *  
      * makeMicrogridGraph()
      *
      * @return a microgrid graph representing the subgraph we know about
@@ -60,28 +56,13 @@ public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
 
         //Add nodes to set
         nodes.add(g);
-        nodes.add(b);
-        nodes.add(l);
         nodes.add(gBreaker);
-        nodes.add(bBreaker);
-        nodes.add(lBreaker);
         nodes.add(ourHub);
-        nodes.add(ourBreaker);
-        nodes.add(centralHub);
-
         //Edges
-        edges.add(new MicrogridEdge("microgrid-edge-a-gb", g, gBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-bb", b, bBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-lb", l, lBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-test-c-gb", gBreaker, g, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-test-c-gbh", ourHub, gBreaker, MicrogridEdgeType.BUS));
 
-        edges.add(new MicrogridEdge("microgrid-edge-a-gbh", gBreaker, ourHub, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-bbh", bBreaker, ourHub, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-lbh", lBreaker, ourHub, MicrogridEdgeType.BUS));
-
-        edges.add(new MicrogridEdge("microgrid-edge-a-hb", ourHub, ourBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-bch", ourBreaker, centralHub, MicrogridEdgeType.BUS));
-
-        return new MicrogridGraph("microgrid-graph-subgraph-a", edges, nodes);
+        return new MicrogridGraph("microgrid-graph-subgraph-test-c", edges, nodes);
     }
 
     /**
@@ -98,12 +79,10 @@ public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
      * <p>
      * constructor
      */
-    public DummyControllerAMicrogridSenderAgent() {
+    public DummyTestScenarioCRemote() {
         //Call super with the parameters from above
         super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
     }
-
-    
 
     /**
      * setup()
@@ -121,7 +100,7 @@ public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
     protected void setup() {
         super.setup();
 
-        addBehaviour(new TickerBehaviour(this, 100) {
+        addBehaviour(new TickerBehaviour(this, 311) {
             @Override
             protected void onTick() {
                 MicrogridNode node = getSubgraph().getNodes().iterator().next();
@@ -131,38 +110,73 @@ public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.VOLTAGE,
-                                controller.getVoltage()));
+                                DummyPhysicalController.getVoltage()));
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.AMPERAGE,
-                                controller.getAmperage()));
+                                DummyPhysicalController.getAmperage()));
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.WATTAGE,
-                                controller.getWattage()));
+                                DummyPhysicalController.getWattage()));
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridBooleanMeasurementType.FAULT,
-                                controller.isFault()));
+                                DummyPhysicalController.isFault()));
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridBooleanMeasurementType.WARNING,
-                                controller.isWarning()));
+                                DummyPhysicalController.isWarning()));
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 gBreaker,
                                 MicrogridBooleanMeasurementType.CIRCUIT_BREAKER_TRIPPED,
-                                controller.isCircuitBreakerOpen()));
+                                DummyPhysicalController.isCircuitBreakerOpen()));
             }
         });
+    }
+
+    /**
+     * DummyPhysicalController
+     * <p>
+     * class
+     * <p>
+     * Dummy implementations of functions such as getVoltage()
+     * <p>
+     * this separates out the dummy measurement code from real, re-usable measurement sending code
+     */
+    private static class DummyPhysicalController {
+        public static float getVoltage() {
+            return 500L;
+        }
+
+        public static float getAmperage() {
+            return (float) Math.sin(System.currentTimeMillis() * 6.283185 / 1000) * 10L;
+        }
+
+        public static float getWattage() {
+            return getVoltage() * getAmperage();
+        }
+
+        public static boolean isFault() {
+            return getWattage() > 0;
+        }
+
+        public static boolean isWarning() {
+            return getWattage() < 0;
+        }
+
+        public static boolean isCircuitBreakerOpen() {
+            return isFault();
+        }
     }
 }

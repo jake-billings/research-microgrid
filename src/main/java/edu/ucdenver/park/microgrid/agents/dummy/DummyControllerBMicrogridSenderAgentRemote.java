@@ -13,19 +13,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * DummyTestScenario
+ * DummyControllerAMicrogridSenderAgent
  * <p>
  * class: JADE agent
  * <p>
  * this is a MicrogridSenderAgent that uses dummy microgrid data
  * <p>
- * this agent implements a specific test case from Dr. Park (180406 Data definition.docx)
- * <p>
  * See ExampleMicrogridSenderAgent for more documentation
  *
  * @author Jake Billings
  */
-public class DummyTestScenarioBRemote extends MicrogridSenderAgent {
+public class DummyControllerBMicrogridSenderAgentRemote extends MicrogridSenderAgent {
     /**
      * makeReceiverAID()
      *
@@ -37,14 +35,22 @@ public class DummyTestScenarioBRemote extends MicrogridSenderAgent {
         return aid;
     }
 
+    //Dummy Controller
+    private static DummyPhysicalController controller = DummyPhysicalController.getInstance();
 
     //Nodes
-    //Declared statically so that they can be accessed by the constructor and by the data sending behavior
-    private static MicrogridNode g = new MicrogridNode("microgrid-node-test-b-g", MicrogridNodeType.GENERATOR);
-    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-test-b-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode g = new MicrogridNode("microgrid-node-b-g", MicrogridNodeType.GENERATOR);
+    private static MicrogridNode b = new MicrogridNode("microgrid-node-b-b", MicrogridNodeType.BATTERY);
+    private static MicrogridNode l = new MicrogridNode("microgrid-node-b-l", MicrogridNodeType.LOAD);
+    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-b-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode bBreaker = new MicrogridNode("microgrid-node-b-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode lBreaker = new MicrogridNode("microgrid-node-b-l-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
     private static MicrogridNode ourHub = new MicrogridNode("micrgrid-node-b-hub", MicrogridNodeType.HUB);
+    private static MicrogridNode ourBreaker = new MicrogridNode("microgrid-node-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode centralHub = new MicrogridNode("microgrid-node-central-b-hub", MicrogridNodeType.HUB);
 
     /**
+     *
      * makeMicrogridGraph()
      *
      * @return a microgrid graph representing the subgraph we know about
@@ -56,13 +62,28 @@ public class DummyTestScenarioBRemote extends MicrogridSenderAgent {
 
         //Add nodes to set
         nodes.add(g);
+        nodes.add(b);
+        nodes.add(l);
         nodes.add(gBreaker);
+        nodes.add(bBreaker);
+        nodes.add(lBreaker);
         nodes.add(ourHub);
-        //Edges
-        edges.add(new MicrogridEdge("microgrid-edge-test-b-gb", gBreaker, g, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-test-b-gbh", ourHub, gBreaker, MicrogridEdgeType.BUS));
+        nodes.add(ourBreaker);
+        nodes.add(centralHub);
 
-        return new MicrogridGraph("microgrid-graph-subgraph-test-b", edges, nodes);
+        //Edges
+        edges.add(new MicrogridEdge("microgrid-edge-b-gb", g, gBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-b-bb", b, bBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-b-lb", l, lBreaker, MicrogridEdgeType.BUS));
+
+        edges.add(new MicrogridEdge("microgrid-edge-b-gbh", gBreaker, ourHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-b-bbh", bBreaker, ourHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-b-lbh", lBreaker, ourHub, MicrogridEdgeType.BUS));
+
+        edges.add(new MicrogridEdge("microgrid-edge-b-hb", ourHub, ourBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-b-bch", ourBreaker, centralHub, MicrogridEdgeType.BUS));
+
+        return new MicrogridGraph("microgrid-graph-subgraph-b", edges, nodes);
     }
 
     /**
@@ -79,10 +100,12 @@ public class DummyTestScenarioBRemote extends MicrogridSenderAgent {
      * <p>
      * constructor
      */
-    public DummyTestScenarioBRemote() {
+    public DummyControllerBMicrogridSenderAgentRemote() {
         //Call super with the parameters from above
         super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
     }
+
+    
 
     /**
      * setup()
@@ -100,7 +123,7 @@ public class DummyTestScenarioBRemote extends MicrogridSenderAgent {
     protected void setup() {
         super.setup();
 
-        addBehaviour(new TickerBehaviour(this, 311) {
+        addBehaviour(new TickerBehaviour(this, 100) {
             @Override
             protected void onTick() {
                 MicrogridNode node = getSubgraph().getNodes().iterator().next();
@@ -110,73 +133,38 @@ public class DummyTestScenarioBRemote extends MicrogridSenderAgent {
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.VOLTAGE,
-                                DummyPhysicalController.getVoltage()));
+                                controller.getVoltage()));
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.AMPERAGE,
-                                DummyPhysicalController.getAmperage()));
+                                controller.getAmperage()));
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.WATTAGE,
-                                DummyPhysicalController.getWattage()));
+                                controller.getWattage()));
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridBooleanMeasurementType.FAULT,
-                                DummyPhysicalController.isFault()));
+                                controller.isFault()));
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
                                 MicrogridBooleanMeasurementType.WARNING,
-                                DummyPhysicalController.isWarning()));
+                                controller.isWarning()));
                 sendDatum(
                         new BooleanMicrogridDatum(
                                 System.currentTimeMillis(),
                                 gBreaker,
                                 MicrogridBooleanMeasurementType.CIRCUIT_BREAKER_TRIPPED,
-                                DummyPhysicalController.isCircuitBreakerOpen()));
+                                controller.isCircuitBreakerOpen()));
             }
         });
-    }
-
-    /**
-     * DummyPhysicalController
-     * <p>
-     * class
-     * <p>
-     * Dummy implementations of functions such as getVoltage()
-     * <p>
-     * this separates out the dummy measurement code from real, re-usable measurement sending code
-     */
-    private static class DummyPhysicalController {
-        public static float getVoltage() {
-            return 500L;
-        }
-
-        public static float getAmperage() {
-            return (float) Math.sin(System.currentTimeMillis() * 6.283185 / 1000) * 10L;
-        }
-
-        public static float getWattage() {
-            return getVoltage() * getAmperage();
-        }
-
-        public static boolean isFault() {
-            return getWattage() > 0;
-        }
-
-        public static boolean isWarning() {
-            return getWattage() < 0;
-        }
-
-        public static boolean isCircuitBreakerOpen() {
-            return isFault();
-        }
     }
 }

@@ -33,7 +33,22 @@ public class DummyControllerBMicrogridSenderAgent extends MicrogridSenderAgent {
         return new AID("ReceiverAgent", AID.ISLOCALNAME);
     }
 
+    //Dummy Controller
+    private static DummyPhysicalController controller = DummyPhysicalController.getInstance();
+
+    //Nodes
+    private static MicrogridNode g = new MicrogridNode("microgrid-node-b-g", MicrogridNodeType.GENERATOR);
+    private static MicrogridNode b = new MicrogridNode("microgrid-node-b-b", MicrogridNodeType.BATTERY);
+    private static MicrogridNode l = new MicrogridNode("microgrid-node-b-l", MicrogridNodeType.LOAD);
+    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-b-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode bBreaker = new MicrogridNode("microgrid-node-b-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode lBreaker = new MicrogridNode("microgrid-node-b-l-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode ourHub = new MicrogridNode("micrgrid-node-b-hub", MicrogridNodeType.HUB);
+    private static MicrogridNode ourBreaker = new MicrogridNode("microgrid-node-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode centralHub = new MicrogridNode("microgrid-node-central-b-hub", MicrogridNodeType.HUB);
+    
     /**
+     *  
      * makeMicrogridGraph()
      *
      * @return a microgrid graph representing the subgraph we know about
@@ -42,17 +57,6 @@ public class DummyControllerBMicrogridSenderAgent extends MicrogridSenderAgent {
         //Declare two hash sets to hold our nodes and edges
         Set<MicrogridNode> nodes = new HashSet<MicrogridNode>();
         Set<MicrogridEdge> edges = new HashSet<MicrogridEdge>();
-
-        //Nodes
-        MicrogridNode g = new MicrogridNode("microgrid-node-b-g", MicrogridNodeType.GENERATOR);
-        MicrogridNode b = new MicrogridNode("microgrid-node-b-b", MicrogridNodeType.BATTERY);
-        MicrogridNode l = new MicrogridNode("microgrid-node-b-l", MicrogridNodeType.LOAD);
-        MicrogridNode gBreaker = new MicrogridNode("microgrid-node-b-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-        MicrogridNode bBreaker = new MicrogridNode("microgrid-node-b-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-        MicrogridNode lBreaker = new MicrogridNode("microgrid-node-b-l-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-        MicrogridNode ourHub = new MicrogridNode("micrgrid-node-b-hub", MicrogridNodeType.HUB);
-        MicrogridNode ourBreaker = new MicrogridNode("microgrid-node-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-        MicrogridNode centralHub = new MicrogridNode("microgrid-node-central-b-hub", MicrogridNodeType.HUB);
 
         //Add nodes to set
         nodes.add(g);
@@ -99,31 +103,65 @@ public class DummyControllerBMicrogridSenderAgent extends MicrogridSenderAgent {
         super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
     }
 
+    
+
     /**
      * setup()
      * <p>
      * override setup function so that we can add behaviors
+     * <p>
+     * a note on period:
+     * when generating a dummy 1HZ sine wave and sampling at 1/2000ms, I found that the sine value appeared
+     * to stay the same due to the harmonic interaction of the TickerBehavior and the wave. If  you are sampling waves,
+     * I recommend picking a prime number that is far smaller than the period of the wave.
+     * <p>
+     * However, keep in mind that this period must also be much lower than the blocking time of the receiver agent, or
+     * you will find errors due to the queue filling up
      */
     protected void setup() {
         super.setup();
 
-        addBehaviour(new TickerBehaviour(this, 2000) {
+        addBehaviour(new TickerBehaviour(this, 100) {
             @Override
             protected void onTick() {
                 MicrogridNode node = getSubgraph().getNodes().iterator().next();
 
-                //This is an old of how to properly send a measurement to the server assuming you have a node
                 sendDatum(
-                        //Create a FloatMicrogridDatum object to hold the measurement
                         new FloatMicrogridDatum(
-                                //Timestamp the datum with the current number of milliseconds from Jan 1st, 1970
                                 System.currentTimeMillis(),
-                                //Tell the Datum which node measured it
-                                node,
-                                //Pretend we're measuring voltage
-                               MicrogridFloatMeasurementType.VOLTAGE,
-                                //Provide a dummy value for the measurement
-                                15.0F));
+                                g,
+                                MicrogridFloatMeasurementType.VOLTAGE,
+                                controller.getVoltage()));
+                sendDatum(
+                        new FloatMicrogridDatum(
+                                System.currentTimeMillis(),
+                                g,
+                                MicrogridFloatMeasurementType.AMPERAGE,
+                                controller.getAmperage()));
+                sendDatum(
+                        new FloatMicrogridDatum(
+                                System.currentTimeMillis(),
+                                g,
+                                MicrogridFloatMeasurementType.WATTAGE,
+                                controller.getWattage()));
+                sendDatum(
+                        new BooleanMicrogridDatum(
+                                System.currentTimeMillis(),
+                                g,
+                                MicrogridBooleanMeasurementType.FAULT,
+                                controller.isFault()));
+                sendDatum(
+                        new BooleanMicrogridDatum(
+                                System.currentTimeMillis(),
+                                g,
+                                MicrogridBooleanMeasurementType.WARNING,
+                                controller.isWarning()));
+                sendDatum(
+                        new BooleanMicrogridDatum(
+                                System.currentTimeMillis(),
+                                gBreaker,
+                                MicrogridBooleanMeasurementType.CIRCUIT_BREAKER_TRIPPED,
+                                controller.isCircuitBreakerOpen()));
             }
         });
     }

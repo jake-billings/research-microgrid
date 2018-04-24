@@ -2,7 +2,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE', which is part of this source code package.
  */
-package edu.ucdenver.park.microgrid.agents.dummy;
+package edu.ucdenver.park.microgrid.agents.dummy.old;
 
 import edu.ucdenver.park.microgrid.agents.core.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.*;
@@ -25,7 +25,7 @@ import java.util.Set;
  *
  * @author Jake Billings
  */
-public class DummyTestScenarioCRemote extends MicrogridSenderAgent {
+public class DummyTestScenarioBRemote extends MicrogridSenderAgent {
     /**
      * makeReceiverAID()
      *
@@ -40,9 +40,9 @@ public class DummyTestScenarioCRemote extends MicrogridSenderAgent {
 
     //Nodes
     //Declared statically so that they can be accessed by the constructor and by the data sending behavior
-    private static MicrogridNode g = new MicrogridNode("microgrid-node-test-c-g", MicrogridNodeType.GENERATOR);
-    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-test-c-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode ourHub = new MicrogridNode("micrgrid-node-c-hub", MicrogridNodeType.HUB);
+    private static MicrogridNode g = new MicrogridNode("microgrid-node-test-b-g", MicrogridNodeType.GENERATOR);
+    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-test-b-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode ourHub = new MicrogridNode("micrgrid-node-b-hub", MicrogridNodeType.HUB);
 
     /**
      * makeMicrogridGraph()
@@ -59,10 +59,10 @@ public class DummyTestScenarioCRemote extends MicrogridSenderAgent {
         nodes.add(gBreaker);
         nodes.add(ourHub);
         //Edges
-        edges.add(new MicrogridEdge("microgrid-edge-test-c-gb", gBreaker, g, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-test-c-gbh", ourHub, gBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-test-b-gb", gBreaker, g, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-test-b-gbh", ourHub, gBreaker, MicrogridEdgeType.BUS));
 
-        return new MicrogridGraph("microgrid-graph-subgraph-test-c", edges, nodes);
+        return new MicrogridGraph("microgrid-graph-subgraph-test-b", edges, nodes);
     }
 
     /**
@@ -79,7 +79,7 @@ public class DummyTestScenarioCRemote extends MicrogridSenderAgent {
      * <p>
      * constructor
      */
-    public DummyTestScenarioCRemote() {
+    public DummyTestScenarioBRemote() {
         //Call super with the parameters from above
         super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
     }

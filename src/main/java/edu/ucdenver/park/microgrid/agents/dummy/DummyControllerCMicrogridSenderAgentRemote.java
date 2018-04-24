@@ -23,32 +23,34 @@ import java.util.Set;
  *
  * @author Jake Billings
  */
-public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
+public class DummyControllerCMicrogridSenderAgentRemote extends MicrogridSenderAgent {
     /**
      * makeReceiverAID()
      *
      * @return an AID pointing to the agent that will receive the data we send
      */
     private static AID makeReceiverAID() {
-        return new AID("ReceiverAgent", AID.ISLOCALNAME);
+        AID aid = new AID("ReceiverAgent@10.20.102.203:1100/JADE", AID.ISGUID);
+        aid.addAddresses("http://NC2611-PC-16.ucdenver.pvt:7778/acc");
+        return aid;
     }
 
     //Dummy Controller
     private static DummyPhysicalController controller = DummyPhysicalController.getInstance();
 
     //Nodes
-    private static MicrogridNode g = new MicrogridNode("microgrid-node-a-g", MicrogridNodeType.GENERATOR);
-    private static MicrogridNode b = new MicrogridNode("microgrid-node-a-b", MicrogridNodeType.BATTERY);
-    private static MicrogridNode l = new MicrogridNode("microgrid-node-a-l", MicrogridNodeType.LOAD);
-    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-a-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode bBreaker = new MicrogridNode("microgrid-node-a-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode lBreaker = new MicrogridNode("microgrid-node-a-l-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode ourHub = new MicrogridNode("micrgrid-node-a-hub", MicrogridNodeType.HUB);
-    private static MicrogridNode ourBreaker = new MicrogridNode("microgrid-node-a-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-    private static MicrogridNode centralHub = new MicrogridNode("microgrid-node-central-a-hub", MicrogridNodeType.HUB);
-    
+    private static MicrogridNode g = new MicrogridNode("microgrid-node-c-g", MicrogridNodeType.GENERATOR);
+    private static MicrogridNode b = new MicrogridNode("microgrid-node-c-b", MicrogridNodeType.BATTERY);
+    private static MicrogridNode l = new MicrogridNode("microgrid-node-c-l", MicrogridNodeType.LOAD);
+    private static MicrogridNode gBreaker = new MicrogridNode("microgrid-node-c-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode bBreaker = new MicrogridNode("microgrid-node-c-b-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode lBreaker = new MicrogridNode("microgrid-node-c-l-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode ourHub = new MicrogridNode("micrgrid-node-c-hub", MicrogridNodeType.HUB);
+    private static MicrogridNode ourBreaker = new MicrogridNode("microgrid-node-c-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+    private static MicrogridNode centralHub = new MicrogridNode("microgrid-node-central-c-hub", MicrogridNodeType.HUB);
+
     /**
-     *  
+     *
      * makeMicrogridGraph()
      *
      * @return a microgrid graph representing the subgraph we know about
@@ -70,18 +72,18 @@ public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
         nodes.add(centralHub);
 
         //Edges
-        edges.add(new MicrogridEdge("microgrid-edge-a-gb", g, gBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-bb", b, bBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-lb", l, lBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-gb", g, gBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-bb", b, bBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-lb", l, lBreaker, MicrogridEdgeType.BUS));
 
-        edges.add(new MicrogridEdge("microgrid-edge-a-gbh", gBreaker, ourHub, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-bbh", bBreaker, ourHub, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-lbh", lBreaker, ourHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-gbh", gBreaker, ourHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-bbh", bBreaker, ourHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-lbh", lBreaker, ourHub, MicrogridEdgeType.BUS));
 
-        edges.add(new MicrogridEdge("microgrid-edge-a-hb", ourHub, ourBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-a-bch", ourBreaker, centralHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-hb", ourHub, ourBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-bch", ourBreaker, centralHub, MicrogridEdgeType.BUS));
 
-        return new MicrogridGraph("microgrid-graph-subgraph-a", edges, nodes);
+        return new MicrogridGraph("microgrid-graph-subgraph-c", edges, nodes);
     }
 
     /**
@@ -98,7 +100,7 @@ public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
      * <p>
      * constructor
      */
-    public DummyControllerAMicrogridSenderAgent() {
+    public DummyControllerCMicrogridSenderAgentRemote() {
         //Call super with the parameters from above
         super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
     }
@@ -125,6 +127,8 @@ public class DummyControllerAMicrogridSenderAgent extends MicrogridSenderAgent {
             @Override
             protected void onTick() {
                 MicrogridNode node = getSubgraph().getNodes().iterator().next();
+
+                System.out.println(controller.getAmperage());
 
                 sendDatum(
                         new FloatMicrogridDatum(

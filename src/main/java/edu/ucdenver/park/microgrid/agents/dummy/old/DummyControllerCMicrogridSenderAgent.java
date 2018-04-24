@@ -2,7 +2,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE', which is part of this source code package.
  */
-package edu.ucdenver.park.microgrid.agents.dummy;
+package edu.ucdenver.park.microgrid.agents.dummy.old;
 
 import edu.ucdenver.park.microgrid.agents.core.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.*;
@@ -23,7 +23,7 @@ import java.util.Set;
  *
  * @author Jake Billings
  */
-public class DummyControllerDMicrogridSenderAgent extends MicrogridSenderAgent {
+public class DummyControllerCMicrogridSenderAgent extends MicrogridSenderAgent {
     /**
      * makeReceiverAID()
      *
@@ -44,15 +44,15 @@ public class DummyControllerDMicrogridSenderAgent extends MicrogridSenderAgent {
         Set<MicrogridEdge> edges = new HashSet<MicrogridEdge>();
 
         //Nodes
-        MicrogridNode g = new MicrogridNode("microgrid-node-d-g", MicrogridNodeType.GENERATOR);
-        MicrogridNode b = new MicrogridNode("microgrid-node-d-d", MicrogridNodeType.BATTERY);
-        MicrogridNode l = new MicrogridNode("microgrid-node-d-l", MicrogridNodeType.LOAD);
-        MicrogridNode gBreaker = new MicrogridNode("microgrid-node-d-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-        MicrogridNode bBreaker = new MicrogridNode("microgrid-node-d-d-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-        MicrogridNode lBreaker = new MicrogridNode("microgrid-node-d-l-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-        MicrogridNode ourHub = new MicrogridNode("micrgrid-node-d-hub", MicrogridNodeType.HUB);
-        MicrogridNode ourBreaker = new MicrogridNode("microgrid-node-d-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
-        MicrogridNode centralHub = new MicrogridNode("microgrid-node-central-d-hub", MicrogridNodeType.HUB);
+        MicrogridNode g = new MicrogridNode("microgrid-node-c-g", MicrogridNodeType.GENERATOR);
+        MicrogridNode b = new MicrogridNode("microgrid-node-c-c", MicrogridNodeType.BATTERY);
+        MicrogridNode l = new MicrogridNode("microgrid-node-c-l", MicrogridNodeType.LOAD);
+        MicrogridNode gBreaker = new MicrogridNode("microgrid-node-c-g-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode bBreaker = new MicrogridNode("microgrid-node-c-c-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode lBreaker = new MicrogridNode("microgrid-node-c-l-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode ourHub = new MicrogridNode("micrgrid-node-c-hub", MicrogridNodeType.HUB);
+        MicrogridNode ourBreaker = new MicrogridNode("microgrid-node-c-breaker", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode centralHub = new MicrogridNode("microgrid-node-central-c-hub", MicrogridNodeType.HUB);
 
         //Add nodes to set
         nodes.add(g);
@@ -66,18 +66,18 @@ public class DummyControllerDMicrogridSenderAgent extends MicrogridSenderAgent {
         nodes.add(centralHub);
 
         //Edges
-        edges.add(new MicrogridEdge("microgrid-edge-d-gb", g, gBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-d-db", b, bBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-d-lb", l, lBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-gb", g, gBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-cb", b, bBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-lb", l, lBreaker, MicrogridEdgeType.BUS));
 
-        edges.add(new MicrogridEdge("microgrid-edge-d-gbh", gBreaker, ourHub, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-d-dbh", bBreaker, ourHub, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-d-lbh", lBreaker, ourHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-gbh", gBreaker, ourHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-cbh", bBreaker, ourHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-lbh", lBreaker, ourHub, MicrogridEdgeType.BUS));
 
-        edges.add(new MicrogridEdge("microgrid-edge-d-hb", ourHub, ourBreaker, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-d-dch", ourBreaker, centralHub, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-hb", ourHub, ourBreaker, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-c-cch", ourBreaker, centralHub, MicrogridEdgeType.BUS));
 
-        return new MicrogridGraph("microgrid-graph-subgraph-d", edges, nodes);
+        return new MicrogridGraph("microgrid-graph-subgraph-c", edges, nodes);
     }
 
     /**
@@ -94,7 +94,7 @@ public class DummyControllerDMicrogridSenderAgent extends MicrogridSenderAgent {
      * <p>
      * constructor
      */
-    public DummyControllerDMicrogridSenderAgent() {
+    public DummyControllerCMicrogridSenderAgent() {
         //Call super with the parameters from above
         super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
     }

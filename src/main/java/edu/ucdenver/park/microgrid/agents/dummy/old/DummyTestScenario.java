@@ -2,7 +2,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE', which is part of this source code package.
  */
-package edu.ucdenver.park.microgrid.agents.dummy;
+package edu.ucdenver.park.microgrid.agents.dummy.old;
 
 import edu.ucdenver.park.microgrid.agents.core.MicrogridSenderAgent;
 import edu.ucdenver.park.microgrid.data.*;
@@ -25,16 +25,14 @@ import java.util.Set;
  *
  * @author Jake Billings
  */
-public class DummyTestScenarioARemote extends MicrogridSenderAgent {
+public class DummyTestScenario extends MicrogridSenderAgent {
     /**
      * makeReceiverAID()
      *
      * @return an AID pointing to the agent that will receive the data we send
      */
     private static AID makeReceiverAID() {
-        AID aid = new AID("ReceiverAgent@10.20.102.203:1100/JADE", AID.ISGUID);
-        aid.addAddresses("http://NC2611-PC-16.ucdenver.pvt:7778/acc");
-        return aid;
+        return new AID("ReceiverAgent", AID.ISLOCALNAME);
     }
 
 
@@ -79,7 +77,7 @@ public class DummyTestScenarioARemote extends MicrogridSenderAgent {
      * <p>
      * constructor
      */
-    public DummyTestScenarioARemote() {
+    public DummyTestScenario() {
         //Call super with the parameters from above
         super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
     }
@@ -100,12 +98,10 @@ public class DummyTestScenarioARemote extends MicrogridSenderAgent {
     protected void setup() {
         super.setup();
 
-        addBehaviour(new TickerBehaviour(this, 100) {
+        addBehaviour(new TickerBehaviour(this, 311) {
             @Override
             protected void onTick() {
                 MicrogridNode node = getSubgraph().getNodes().iterator().next();
-
-                System.out.println(DummyPhysicalController.getAmperage());
 
                 sendDatum(
                         new FloatMicrogridDatum(
@@ -162,7 +158,7 @@ public class DummyTestScenarioARemote extends MicrogridSenderAgent {
         }
 
         public static float getAmperage() {
-            return (float) Math.sin(System.currentTimeMillis() * 6.283185 / 10000) * 10L;
+            return (float) Math.sin(System.currentTimeMillis() * 6.283185 / 1000) * 10L;
         }
 
         public static float getWattage() {
