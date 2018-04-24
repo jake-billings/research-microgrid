@@ -21,6 +21,7 @@ Each data structure is abstracted in the "abs" package such that the code could 
 1. You will need Administrator-level access to a computer
 1. You will need to have cloned this git repository using `git clone`
 1. You will need to have IntelliJ (or be able to translate my instructions from IntelliJ to whatever you're using)
+1. You will need JDK 1.8 (Not JDK <1.8. NOT JDK >=1.9. You need exactly JDK1.8 (See "Issues" section)
 
 ## Setup Javascript Frontend
 1. Install NodeJS
@@ -80,3 +81,6 @@ Each data structure is abstracted in the "abs" package such that the code could 
 ## Goals
 The scrolling graph may eventually look like this oscilloscope.
 ![oscilloscope](docs/screenshots/oscilloscope.png)
+
+## Issues
+1. Inherited issue from netty: we use a library to run a socket.io connection to a web browser. This library relies on netty. In Java 9, the keyword "native" is reserved. This breaks behavior in netty. Until netty is fixed, we must use JDK 1.8 instead of 1.9.
