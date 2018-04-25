@@ -19,14 +19,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum MicrogridBooleanMeasurementType {
-    FAULT(-1, "Fault", "Fault", "Nominal"),
-    WARNING(-2, "Warning", "Warning", "Nominal"),
-    CIRCUIT_BREAKER_TRIPPED(-3, "Circuit Breaker", "Open", "Nominal (Closed)");
+    FAULT((byte) -1, "Fault", "Fault", "Nominal"),
+    WARNING((byte) -2, "Warning", "Warning", "Nominal"),
+    CIRCUIT_BREAKER_TRIPPED((byte) -3, "Circuit Breaker", "Open", "Nominal (Closed)");
 
     /**
      * _id
      *
-     * int
+     * byte
      *
      * number representing the type of edge; will be in the data packet in the JADE transport protocol
      * should be declared in global protocol spec
@@ -38,7 +38,7 @@ public enum MicrogridBooleanMeasurementType {
      *
      * Ex: -2
      */
-    private final int _id;
+    private final byte _id;
 
     /**
      * name
@@ -83,15 +83,34 @@ public enum MicrogridBooleanMeasurementType {
      * @param trueName the name if it's true (e.g. closed)
      * @param falseName the name if it's false (e.g. open)
      */
-    MicrogridBooleanMeasurementType(int _id, String name, String trueName, String falseName) {
+    MicrogridBooleanMeasurementType(byte _id, String name, String trueName, String falseName) {
         this._id = _id;
         this.name = name;
         this.trueName = trueName;
         this.falseName = falseName;
     }
 
+    /**
+     * fromId()
+     *
+     * returns the enum item that has the provided _id
+     *
+     * throws IllegalArgumentException if there is no item with that _id
+     *
+     * @param _id the _id to match
+     * @return the enum item
+     */
+    public static MicrogridBooleanMeasurementType fromId(byte _id) {
+        for (MicrogridBooleanMeasurementType a : MicrogridBooleanMeasurementType.class.getEnumConstants()) {
+            if (a.get_id() == _id) {
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("No MicrogridBooleanMeasurementType with that _id");
+    }
+
     //----Getters----
-    public int get_id() {
+    public byte get_id() {
         return _id;
     }
     public String getName() {

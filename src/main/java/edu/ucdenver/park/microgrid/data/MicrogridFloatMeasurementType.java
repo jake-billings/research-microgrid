@@ -102,6 +102,25 @@ public enum MicrogridFloatMeasurementType {
         this.baseUnitType = baseUnitType;
     }
 
+    /**
+     * fromId()
+     *
+     * returns the enum item that has the provided _id
+     *
+     * throws IllegalArgumentException if there is no item with that _id
+     *
+     * @param _id the _id to match
+     * @return the enum item
+     */
+    public static MicrogridFloatMeasurementType fromId(byte _id) {
+        for (MicrogridFloatMeasurementType a : MicrogridFloatMeasurementType.class.getEnumConstants()) {
+            if (a.get_id() == _id) {
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("No MicrogridFloatMeasurementType with that _id");
+    }
+
     //----Getters----+
     public int get_id() {
         return this._id;

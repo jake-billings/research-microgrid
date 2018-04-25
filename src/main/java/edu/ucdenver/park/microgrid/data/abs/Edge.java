@@ -4,6 +4,10 @@
  */
 package edu.ucdenver.park.microgrid.data.abs;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * Edge
  * <p>
@@ -23,13 +27,24 @@ package edu.ucdenver.park.microgrid.data.abs;
  */
 public class Edge<N extends Node> extends Entity {
     /**
+     * Edge
+     *
+     * constructor: empty
+     *
+     * for use with deserialization; do not use for instantiation
+     */
+    public Edge() {
+        super();
+    }
+
+    /**
      * to
      * <p>
      * N
      * <p>
      * the node this edge points to
      */
-    private final N to;
+    private N to;
 
     /**
      * from
@@ -39,7 +54,7 @@ public class Edge<N extends Node> extends Entity {
      * <p>
      * the node this edge is from
      */
-    private final N from;
+    private N from;
 
     public Edge(String _id, N to, N from) {
         super(_id);
@@ -55,5 +70,31 @@ public class Edge<N extends Node> extends Entity {
 
     public N getFrom() {
         return from;
+    }
+
+    protected void setTo(N to) {
+        this.to = to;
+    }
+
+    protected void setFrom(N from) {
+        this.from = from;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        this.getTo().writeExternal(out);
+        this.getFrom().writeExternal(out);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        Node to = new Node();
+        to.readExternal(in);
+        this.setTo((N) to);
+        Node from = new Node();
+        from.readExternal(in);
+        this.setTo((N) from);
     }
 }

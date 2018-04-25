@@ -19,19 +19,19 @@ package edu.ucdenver.park.microgrid.data;
  */
 public enum MicrogridEdgeType {
     //todo actual connection types
-    BUS(1, "Bus");
+    BUS((byte) 1, "Bus");
 
     /**
      * _id
      * 
-     * int
+     * byte
      * 
      * number representing the type of edge; will be in the data packet in the JADE transport protocol
      * should be declared in global protocol spec
      * 
      * Ex: 2
      */
-    private final int _id;
+    private final byte _id;
 
     /**
      * name
@@ -50,7 +50,7 @@ public enum MicrogridEdgeType {
      * @param _id  the numeric id (decided in protocol spec)
      * @param name the human-readable name
      */
-    MicrogridEdgeType(int _id, String name) {
+    MicrogridEdgeType(byte _id, String name) {
         this._id = _id;
         this.name = name;
     }
@@ -61,5 +61,24 @@ public enum MicrogridEdgeType {
 
     public String getName() {
         return name;
+    }
+
+    /**
+     * fromId()
+     *
+     * returns the enum item that has the provided _id
+     *
+     * throws IllegalArgumentException if there is no item with that _id
+     *
+     * @param _id the _id to match
+     * @return the enum item
+     */
+    public static MicrogridEdgeType fromId(byte _id) {
+        for (MicrogridEdgeType a : MicrogridEdgeType.class.getEnumConstants()) {
+            if (a.get_id() == _id) {
+                return a;
+            }
+        }
+        throw new IllegalArgumentException("No MicrogridEdgeType with that _id");
     }
 }

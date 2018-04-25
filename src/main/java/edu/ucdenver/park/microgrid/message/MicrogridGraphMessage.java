@@ -6,6 +6,10 @@ package edu.ucdenver.park.microgrid.message;
 
 import edu.ucdenver.park.microgrid.data.MicrogridGraph;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * MicrogridGraphMessage
  *
@@ -36,6 +40,8 @@ import edu.ucdenver.park.microgrid.data.MicrogridGraph;
  * @author Jake Billings
  */
 public class MicrogridGraphMessage extends Message {
+    public MicrogridGraphMessage() {}
+
     /**
      * subgraph
      *
@@ -49,7 +55,7 @@ public class MicrogridGraphMessage extends Message {
      *
      * the graph need not contain information about nodes controlled by other agents.
      */
-    private final MicrogridGraph subgraph;
+    private MicrogridGraph subgraph;
 
     /**
      * expirationMillis
@@ -68,18 +74,40 @@ public class MicrogridGraphMessage extends Message {
      * the expiration allows us to keep an up-to-date picture of the complete grid; if one part goes offline, it is
      *  removed within a few seconds
      */
-    private final long expirationMillis;
+    private long expirationMillis;
 
     public MicrogridGraphMessage(MicrogridGraph subgraph, long expirationMillis) {
         this.subgraph = subgraph;
         this.expirationMillis = expirationMillis;
     }
 
+    //-----Getters-----
     public MicrogridGraph getSubgraph() {
         return subgraph;
     }
-
     public long getExpirationMillis() {
         return expirationMillis;
+    }
+
+    //----Setters----
+    private void setSubgraph(MicrogridGraph subgraph) {
+        this.subgraph = subgraph;
+    }
+
+    private void setExpirationMillis(long expirationMillis) {
+        this.expirationMillis = expirationMillis;
+    }
+
+    //----Externalizers----
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong(this.getExpirationMillis());
+        this.getSubgraph().writeExternal(out);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.setExpirationMillis(in.readLong());
+        MicrogridGraph g = new MicrogridGraph();
+        g.readExternal(in);
+        this.setSubgraph(g);
     }
 }

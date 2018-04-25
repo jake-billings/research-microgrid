@@ -4,7 +4,7 @@
  */
 package edu.ucdenver.park.microgrid.data.abs;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Objects;
 
 /**
@@ -22,7 +22,7 @@ import java.util.Objects;
  *
  * @author Jake Billings
  */
-public abstract class Entity implements Serializable {
+public abstract class Entity implements Externalizable {
     /**
      * _id
      *
@@ -30,7 +30,18 @@ public abstract class Entity implements Serializable {
      *
      * unique string identifier for this entity; must be globally unique; uuid_4 is a good option
      */
-    private final String _id;
+    private String _id;
+
+    /**
+     * Entity
+     *
+     * constructor: empty
+     *
+     * for use with deserialization; do not use for instantiation
+     */
+    protected Entity() {
+
+    }
 
     /**
      * Entity()
@@ -81,7 +92,18 @@ public abstract class Entity implements Serializable {
      * @return _id
      */
     public String get_id() {
-
         return _id;
+    }
+
+    protected void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeUTF(this.get_id());
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.set_id(in.readUTF());
     }
 }

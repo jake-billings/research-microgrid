@@ -4,6 +4,9 @@
  */
 package edu.ucdenver.park.microgrid.data.abs;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,8 +28,19 @@ import java.util.Set;
  * @author Jake Billings
  */
 public class Graph<E extends Edge, N extends Node> extends Entity {
-    private final Set<E> edges;
-    private final Set<N> nodes;
+    private Set<E> edges;
+    private Set<N> nodes;
+
+    /**
+     * Graph
+     *
+     * constructor: empty
+     *
+     * for use with deserialization; do not use for instantiation
+     */
+    public Graph() {
+        super();
+    }
 
     public Graph(String _id) {
         super(_id);
@@ -60,6 +74,14 @@ public class Graph<E extends Edge, N extends Node> extends Entity {
         return nodes;
     }
 
+    protected void setEdges(Set<E> edges) {
+        this.edges = edges;
+    }
+
+    protected void setNodes(Set<N> nodes) {
+        this.nodes = nodes;
+    }
+
     /**
      * union()
      *
@@ -82,5 +104,39 @@ public class Graph<E extends Edge, N extends Node> extends Entity {
         nodes.addAll(this.getNodes());
         nodes.addAll(other.getNodes());
         return new Graph<E, N>(newId, edges, nodes);
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeInt(this.getNodes().size());
+        for (N node : this.getNodes()) {
+            node.writeExternal(out);
+        }
+        out.writeInt(this.getEdges().size());
+        for (E edge : this.getEdges()) {
+            edge.writeExternal(out);
+        }
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        int nodeCount = in.readInt();
+        Set<N> nodes = new HashSet<N>();
+        for (int i = 0; i<nodeCount; i++) {
+            Node n = new Node();
+            n.readExternal(in);
+            nodes.add((N) n);
+        }
+        int edgeCount = in.readInt();
+        Set<E> edges = new HashSet<E>();
+        for (int i = 0; i<edgeCount; i++) {
+            Edge<Node> e = new Edge<Node>();
+            e.readExternal(in);
+            edges.add((E) e);
+        }
+        this.setNodes(nodes);
+        this.setEdges(edges);
     }
 }

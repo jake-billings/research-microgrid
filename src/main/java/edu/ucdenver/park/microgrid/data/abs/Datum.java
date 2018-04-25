@@ -4,6 +4,10 @@
  */
 package edu.ucdenver.park.microgrid.data.abs;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * Datum
  *
@@ -40,11 +44,43 @@ public abstract class Datum extends Entity {
      *
      * the number of milliseconds from Jan 1, 1970 when this datum was recorded
      */
-    private final long timestamp;
+    private long timestamp;
+
+    /**
+     * Datum
+     *
+     * constructor: empty
+     *
+     * for use with deserialization; do not use for instantiation
+     */
+    public Datum() {}
 
     public Datum(String _id, long timestamp) {
         super(_id);
         if (timestamp < 0) throw new IllegalArgumentException("timestamp must be positive when instantiating Datum object");
         this.timestamp = timestamp;
+    }
+
+    //----Getters----
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    //----Setters----
+    private void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    //----Externalizers----
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeLong(timestamp);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        this.setTimestamp(in.readLong());
     }
 }

@@ -4,6 +4,10 @@
  */
 package edu.ucdenver.park.microgrid.data;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * FloatMicrogridDatum
  *
@@ -37,7 +41,7 @@ public class FloatMicrogridDatum extends MicrogridDatum {
      *
      * this is the type of measurement made (e.g. Volts, Amps, Watts)
      */
-    private final MicrogridFloatMeasurementType measurementType;
+    private MicrogridFloatMeasurementType measurementType;
 
     /**
      * value
@@ -46,7 +50,18 @@ public class FloatMicrogridDatum extends MicrogridDatum {
      *
      * the actual float reading represented by this datum object
      */
-    private final float value;
+    private float value;
+
+    /**
+     * FloatMicrogridDatum
+     *
+     * constructor: empty
+     *
+     * for use with deserialization; do not use for instantiation
+     */
+    public FloatMicrogridDatum() {
+        super();
+    }
 
     /**
      * FloatMicrogridDatum
@@ -70,5 +85,27 @@ public class FloatMicrogridDatum extends MicrogridDatum {
     }
     public float getValue() {
         return value;
+    }
+
+    //----Setters----
+    private void setMeasurementType(MicrogridFloatMeasurementType measurementType) {
+        this.measurementType = measurementType;
+    }
+    private void setValue(float value) {
+        this.value = value;
+    }
+    //----Externalizers----
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeFloat(this.getValue());
+        out.writeByte(this.getMeasurementType().get_id());
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        this.setValue(in.readFloat());
+        this.setMeasurementType(MicrogridFloatMeasurementType.fromId(in.readByte()));
     }
 }

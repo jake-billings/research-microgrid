@@ -6,6 +6,10 @@ package edu.ucdenver.park.microgrid.data;
 
 import edu.ucdenver.park.microgrid.data.abs.Node;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * MicrogridNode
  *
@@ -27,8 +31,16 @@ public class MicrogridNode extends Node {
      *  battery, controller, or generator. The purpose of this section of code is to render the network, so we don't
      *  treat these elements with different logic. Thus, we implement their type as an enum.
      */
-    private final MicrogridNodeType microgridNodeType;
+    private MicrogridNodeType microgridNodeType;
 
+    /**
+     * MicrogridGraph
+     *
+     * constructor: empty
+     *
+     * for use with deserialization; do not use for instantiation
+     */
+    public MicrogridNode() {}
 
     public MicrogridNode(String _id, MicrogridNodeType microgridNodeType) {
         super(_id);
@@ -36,7 +48,26 @@ public class MicrogridNode extends Node {
         this.microgridNodeType = microgridNodeType;
     }
 
+    //----Getters----
     public MicrogridNodeType getMicrogridNodeType() {
         return microgridNodeType;
+    }
+
+    //----Setters----
+    public void setMicrogridNodeType(MicrogridNodeType microgridNodeType) {
+        this.microgridNodeType = microgridNodeType;
+    }
+
+    //----Externalizers----
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeByte(this.getMicrogridNodeType().get_id());
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        this.setMicrogridNodeType(MicrogridNodeType.fromId(in.readByte()));
     }
 }

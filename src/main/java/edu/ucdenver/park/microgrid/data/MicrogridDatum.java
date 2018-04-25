@@ -6,6 +6,10 @@ package edu.ucdenver.park.microgrid.data;
 
 import edu.ucdenver.park.microgrid.data.abs.Datum;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * Datum
  *
@@ -32,7 +36,7 @@ import edu.ucdenver.park.microgrid.data.abs.Datum;
  *
  *  @author Jake Billings
  */
-public class MicrogridDatum extends Datum {
+public abstract class MicrogridDatum extends Datum {
     /**
      * node
      *
@@ -40,14 +44,55 @@ public class MicrogridDatum extends Datum {
      *
      * the node at which this datum was recorded
      */
-    private final MicrogridNode node;
+    private MicrogridNode node;
 
+    /**
+     * MicrogridDatum
+     *
+     * constructor: empty
+     *
+     * for use with deserialization; do not use for instantiation
+     */
+    public MicrogridDatum() {
+        super();
+    }
+
+    /**
+     * MicrogridDatum
+     *
+     * constructor
+     *
+     * @param timestamp timestamp when datum was created
+     * @param node node the datum was recorded at
+     * @param measurementTypeId the id of the measurement type
+     */
     public MicrogridDatum(long timestamp, MicrogridNode node, int measurementTypeId) {
         super(node.get_id() + "-" + measurementTypeId, timestamp);
         this.node = node;
     }
 
+    //----Getters----
     public MicrogridNode getNode() {
         return node;
+    }
+
+    //----Setters----
+    private void setNode(MicrogridNode node) {
+        this.node = node;
+    }
+
+    //----Externalizers----
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        this.getNode().writeExternal(out);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        MicrogridNode node = new MicrogridNode();
+        node.readExternal(in);
+        this.setNode(node);
     }
 }

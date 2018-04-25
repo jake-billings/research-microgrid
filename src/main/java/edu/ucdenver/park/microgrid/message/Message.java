@@ -4,6 +4,7 @@
  */
 package edu.ucdenver.park.microgrid.message;
 
+import java.io.Externalizable;
 import java.io.Serializable;
 
 /**
@@ -20,5 +21,5 @@ import java.io.Serializable;
  *
  * @author Jake Billings
  */
-public class Message implements Serializable {
+public abstract class Message implements Externalizable {
 }
