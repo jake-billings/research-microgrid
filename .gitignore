@@ -18,3 +18,5 @@ MTPs-Main-Container.txt
 
 #Ingore misc. files
 *.log
+
+~$*
