@@ -48,15 +48,35 @@ public class DummyCentralMicrogridSenderAgent extends MicrogridSenderAgent {
         MicrogridNode centralHubB = new MicrogridNode("microgrid-node-central-b-hub", MicrogridNodeType.HUB);
         MicrogridNode centralHubC = new MicrogridNode("microgrid-node-central-c-hub", MicrogridNodeType.HUB);
 
+        //Breakers
+        MicrogridNode breakerAL = new MicrogridNode("microgrid-node-central-a-b-l", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode breakerAR = new MicrogridNode("microgrid-node-central-a-b-r", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode breakerBL = new MicrogridNode("microgrid-node-central-b-b-l", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode breakerBR = new MicrogridNode("microgrid-node-central-b-b-r", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode breakerCL = new MicrogridNode("microgrid-node-central-c-b-l", MicrogridNodeType.CIRCUIT_BREAKER);
+        MicrogridNode breakerCR = new MicrogridNode("microgrid-node-central-c-b-r", MicrogridNodeType.CIRCUIT_BREAKER);
+
         //Add nodes to set
         nodes.add(centralHubA);
         nodes.add(centralHubB);
         nodes.add(centralHubC);
+        nodes.add(breakerAL);
+        nodes.add(breakerAR);
+        nodes.add(breakerBL);
+        nodes.add(breakerBR);
+        nodes.add(breakerCL);
+        nodes.add(breakerCR);
 
         //Edges
-        edges.add(new MicrogridEdge("microgrid-edge-central-ab", centralHubA, centralHubB, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-central-bc", centralHubB, centralHubC, MicrogridEdgeType.BUS));
-        edges.add(new MicrogridEdge("microgrid-edge-central-ca", centralHubC, centralHubA, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-abl", centralHubA, breakerAL, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-abr", centralHubA, breakerAR, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-bbl", centralHubB, breakerBL, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-bbr", centralHubB, breakerBR, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-cbl", centralHubC, breakerCL, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-cbr", centralHubC, breakerCR, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-abrbbl", breakerAR, breakerBL, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-bbrcbl", breakerBR, breakerCL, MicrogridEdgeType.BUS));
+        edges.add(new MicrogridEdge("microgrid-edge-central-cblabl", breakerCR, breakerAL, MicrogridEdgeType.BUS));
 
         return new MicrogridGraph("microgrid-graph-subgraph-central", edges, nodes);
     }
