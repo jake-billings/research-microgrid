@@ -179,7 +179,7 @@ public class MicrogridReceiverAgent extends Agent {
         public void action() {
             ACLMessage msg;
 
-            if ((msg = jadeMessageReceiveQueue.poll()) != null) {
+            while ((msg = jadeMessageReceiveQueue.poll()) != null) {
                 try {
                     Object contentObject = msg.getContentObject();
                     if (contentObject instanceof MicrogridGraphMessage) {
