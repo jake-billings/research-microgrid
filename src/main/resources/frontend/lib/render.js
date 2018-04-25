@@ -58,14 +58,28 @@
         }
     }
 
-    function _imgForMeasurement(measurement) {
-        if (measurement.measurementType._id === -3) {
-            if (measurement.value) {
-                return 'img/circuit_breaker_open.png';
-            } else {
-                return 'img/circuit_breaker_closed.png';
+    function _imgForNodeSnapshot(snapshot) {
+        var img = 'img/' + _imgForNodeType(snapshot.microgridNodeType);
+
+        snapshot.measurements.forEach(function (measurement) {
+            if (measurement.measurementType._id === -3) {
+                if (measurement.value) {
+                    img = 'img/circuit_breaker_open.png';
+                } else {
+                    img = 'img/circuit_breaker_closed.png';
+                }
+            } else if (measurement.measurementType._id === -1) {
+                if (measurement.value) {
+                    img = img.replace('.png', '_fault.png');
+                }
+            } else if (measurement.measurementType._id === -2) {
+                if (measurement.value) {
+                    img = img.replace('.png', '_warning.png');
+                }
             }
-        }
+        });
+
+        return img;
     }
 
 
@@ -179,12 +193,10 @@
                         }
                     }, '')
                 };
-                snapshot.measurements.forEach(function (measurement) {
-                    var img = _imgForMeasurement(measurement);
-                    if (img) {
-                        update.image = img;
-                    }
-                });
+                var img = _imgForNodeSnapshot(snapshot);
+                if (img) {
+                    update.image = img;
+                }
                 nodes.update(update);
 
                 //---Update Arrow Directions Based on Current Flow---
