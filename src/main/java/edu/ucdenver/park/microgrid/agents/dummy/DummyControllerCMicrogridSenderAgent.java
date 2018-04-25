@@ -126,8 +126,6 @@ public class DummyControllerCMicrogridSenderAgent extends MicrogridSenderAgent {
             protected void onTick() {
                 MicrogridNode node = getSubgraph().getNodes().iterator().next();
 
-                System.out.println(controller.getAmperage());
-
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
@@ -138,6 +136,12 @@ public class DummyControllerCMicrogridSenderAgent extends MicrogridSenderAgent {
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
                                 g,
+                                MicrogridFloatMeasurementType.AMPERAGE,
+                                controller.getAmperage()));
+                sendDatum(
+                        new FloatMicrogridDatum(
+                                System.currentTimeMillis(),
+                                gBreaker,
                                 MicrogridFloatMeasurementType.AMPERAGE,
                                 controller.getAmperage()));
                 sendDatum(

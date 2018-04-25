@@ -143,6 +143,12 @@ public class DummyControllerAMicrogridSenderAgentRemote extends MicrogridSenderA
                 sendDatum(
                         new FloatMicrogridDatum(
                                 System.currentTimeMillis(),
+                                gBreaker,
+                                MicrogridFloatMeasurementType.AMPERAGE,
+                                controller.getAmperage()));
+                sendDatum(
+                        new FloatMicrogridDatum(
+                                System.currentTimeMillis(),
                                 g,
                                 MicrogridFloatMeasurementType.WATTAGE,
                                 controller.getWattage()));
