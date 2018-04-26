@@ -54,6 +54,7 @@ public class MicrogridDatumMessage extends Message {
 
     //----Externalizers----
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeByte(1);
         if (this.getDatum() instanceof FloatMicrogridDatum) {
             out.writeByte(0x01);
         } else if (this.getDatum() instanceof BooleanMicrogridDatum) {

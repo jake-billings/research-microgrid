@@ -5,6 +5,7 @@
 package edu.ucdenver.park.microgrid.agents.core;
 
 import edu.ucdenver.park.microgrid.live.LiveMicrogridGraph;
+import edu.ucdenver.park.microgrid.message.Message;
 import edu.ucdenver.park.microgrid.message.MicrogridDatumMessage;
 import edu.ucdenver.park.microgrid.message.MicrogridGraphMessage;
 import edu.ucdenver.park.microgrid.socketioserver.MicrogridSocketIOServer;
@@ -14,6 +15,9 @@ import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -181,7 +185,10 @@ public class MicrogridReceiverAgent extends Agent {
 
             while ((msg = jadeMessageReceiveQueue.poll()) != null) {
                 try {
-                    Object contentObject = msg.getContentObject();
+                    ByteArrayInputStream bais = new ByteArrayInputStream(msg.getByteSequenceContent());
+                    ObjectInputStream in = new ObjectInputStream(bais);
+                    Message contentObject = Message.read(in);
+
                     if (contentObject instanceof MicrogridGraphMessage) {
                         liveGrid.receiveMessage((MicrogridGraphMessage) contentObject);
                     } else if (contentObject instanceof MicrogridDatumMessage) {
@@ -189,7 +196,7 @@ public class MicrogridReceiverAgent extends Agent {
                     } else {
                         System.err.println("WARNING: Unknown message received in MicrogridReceiverAgent");
                     }
-                } catch (UnreadableException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
