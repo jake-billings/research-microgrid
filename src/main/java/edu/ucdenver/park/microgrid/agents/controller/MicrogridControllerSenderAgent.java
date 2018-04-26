@@ -20,29 +20,17 @@ public class MicrogridControllerSenderAgent extends MicrogridSenderAgent {
         return aid;
     }
 
+    //Neighborhood One
+    private static MicrogridNode g = new MicrogridNode("microgrid-node-controller-generator", MicrogridNodeType.GENERATOR);
+
     private static MicrogridGraph makeMicrogridGraph() {
         //Declare two hash sets to hold our nodes and edges
         Set<MicrogridNode> dummyNodes = new HashSet<MicrogridNode>();
         Set<MicrogridEdge> dummyEdges = new HashSet<MicrogridEdge>();
 
-        //Neighborhood One
-        MicrogridNode n1Generator = new MicrogridNode("microgrid-node-n1-generator", MicrogridNodeType.GENERATOR);
-        dummyNodes.add(n1Generator);
-        MicrogridNode n1Battery = new MicrogridNode("microgrid-node-n1-battery", MicrogridNodeType.BATTERY);
-        dummyNodes.add(n1Battery);
-        dummyEdges.add(new MicrogridEdge("microgrid-edge-n1-gb", n1Generator, n1Battery, MicrogridEdgeType.BUS));
+        dummyNodes.add(g);
 
-        //Neighborhood Two
-        MicrogridNode n2Generator = new MicrogridNode("microgrid-node-n2-generator", MicrogridNodeType.GENERATOR);
-        dummyNodes.add(n2Generator);
-        MicrogridNode n2Battery = new MicrogridNode("microgrid-node-n2-battery", MicrogridNodeType.BATTERY);
-        dummyNodes.add(n2Battery);
-        dummyEdges.add(new MicrogridEdge("microgrid-edge-n2-gb", n2Generator, n2Battery, MicrogridEdgeType.BUS));
-
-        //Connect the neighborhood
-        dummyEdges.add(new MicrogridEdge("microgrid-edge-inter-n1-n2", n1Battery, n2Battery, MicrogridEdgeType.BUS));
-
-        return new MicrogridGraph("example-microgrid-sender-subgraph", dummyEdges, dummyNodes);
+        return new MicrogridGraph("microgrid-controller", dummyEdges, dummyNodes);
     }
 
     private static long makeGridUpdatePeriod() {
@@ -54,7 +42,7 @@ public class MicrogridControllerSenderAgent extends MicrogridSenderAgent {
         //Call super with the parameters from above
         super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
 
-        handler = new Handler2("COM1", true, data, 8, 3);
+        handler = new Handler2("COM3", true, data, 8, 3);
     }
 
     protected void setup() {

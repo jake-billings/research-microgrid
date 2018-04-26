@@ -57,8 +57,8 @@ public class Port implements SerialPortEventListener{
         port = new SerialPort(Port1);
         try {
             port.openPort();
-            port.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-            port.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+            port.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+            port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
             port.addEventListener(this, SerialPort.MASK_RXCHAR);
             port.purgePort(SerialPort.PURGE_RXCLEAR);
             port.purgePort(SerialPort.PURGE_TXCLEAR);

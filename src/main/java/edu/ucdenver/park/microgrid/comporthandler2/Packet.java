@@ -27,48 +27,52 @@ import java.nio.ByteOrder;
  */
 public class Packet {
     byte header;
-    short to;
-    short from;
+    byte from;
+    byte id;
+    byte type;
     short data;
     byte end;
 
-    Packet(byte h, short t, short f, short d) {
+    Packet(byte h, byte f, byte i, byte t, short d) {
         header = h;
-        to = t;
         from = f;
+        id = i;
+        type = t;
         data = d;
-        end = (byte) 4;
+        end = (char) 59;
     }
 
     //Extracts each section of the packet (assuming the packet is 8 bytes total)
     //and construct packet out of received input for main to manage
     Packet(byte[] input) {
         ByteBuffer headerByte = ByteBuffer.wrap(input, 0, 1);
-        ByteBuffer toByte = ByteBuffer.wrap(input, 1, 2);
-        toByte.order(ByteOrder.LITTLE_ENDIAN);
-        ByteBuffer fromByte = ByteBuffer.wrap(input, 3, 2);
+        ByteBuffer fromByte = ByteBuffer.wrap(input, 1, 1);
         fromByte.order(ByteOrder.LITTLE_ENDIAN);
-        ByteBuffer dataByte = ByteBuffer.wrap(input, 5, 2);
+        ByteBuffer idByte = ByteBuffer.wrap(input, 2, 1);
+        idByte.order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer typeByte = ByteBuffer.wrap(input, 3, 1);
+        typeByte.order(ByteOrder.LITTLE_ENDIAN);
+        ByteBuffer dataByte = ByteBuffer.wrap(input, 4, 2);
         dataByte.order(ByteOrder.LITTLE_ENDIAN);
-        ByteBuffer EOTByte = ByteBuffer.wrap(input, 7, 1);
+        ByteBuffer EOTByte = ByteBuffer.wrap(input, 6, 1);
         header = headerByte.get();
-        to = toByte.getShort();
-        from = fromByte.getShort();
+        from = fromByte.get();
+        id = idByte.get();
+        type = typeByte.get();
         data = dataByte.getShort();
         end = EOTByte.get();
     }
 
     byte[] make() {
-        byte[] packet = new byte[8];
+        byte[] packet = new byte[7];
 
         packet[0] = header;
-        packet[1] = (byte) (to & 0xff);
-        packet[2] = (byte) ((to >> 8) & 0xff);
-        packet[3] = (byte) (from & 0xff);
-        packet[4] = (byte) ((from >> 8) & 0xff);
+        packet[1] = (byte) (from & 0xff);
+        packet[2] = (byte) (id & 0xff);
+        packet[3] = (byte) (type & 0xff);
+        packet[4] = (byte) ((data >> 8) & 0xff);
         packet[5] = (byte) (data & 0xff);
-        packet[6] = (byte) ((data >> 8) & 0xff);
-        packet[7] = end;
+        packet[6] = end;
 
         return packet;
     }
