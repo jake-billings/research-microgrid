@@ -100,6 +100,7 @@ public class MicrogridGraphMessage extends Message {
 
     //----Externalizers----
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeByte(2);
         out.writeLong(this.getExpirationMillis());
         this.getSubgraph().writeExternal(out);
     }

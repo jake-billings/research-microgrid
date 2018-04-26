@@ -16,8 +16,7 @@ import jade.core.behaviours.TickerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -111,7 +110,7 @@ public abstract class MicrogridSenderAgent extends Agent {
 
         //---Add Behaviors---
         addBehaviour(new SendMicrogridGraphMessageBehavior(this, this.gridUpdatePeriod, 2000));
-        addBehaviour(new SendJadeMessagesBehavior(this, 1));
+        addBehaviour(new SendJadeMessagesBehavior(this, 10));
 
         //---Completion Message---
         //Print a message that we finished setting up
@@ -155,9 +154,15 @@ public abstract class MicrogridSenderAgent extends Agent {
      * @param receiver agent id of the target receiver (usually this.receiver)
      * @throws IOException throws IOException because serialization could fail
      */
-    private void sendObjectMessage(Serializable content, AID receiver) throws IOException, UnreadableException {
+    private void sendObjectMessage(Externalizable content, AID receiver) throws IOException, UnreadableException {
         ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-        msg.setContentObject(content);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        content.writeExternal(out);
+        out.close();
+        msg.setByteSequenceContent(baos.toByteArray());
+
         msg.addReceiver(receiver);
 
         //Try to add the message to the send queue; if it doesn't work, the queue is full
@@ -165,21 +170,21 @@ public abstract class MicrogridSenderAgent extends Agent {
         // we know new data is the priority, so clear the queue and add our message
         if (!jadeMessageSendQueue.offer(msg)) {
             System.out.println("Warning: Sender had to dump send queue");
-            Collection<ACLMessage> graphMessages = new HashSet<ACLMessage>();
-            Iterator<ACLMessage> iter = jadeMessageSendQueue.iterator();
-            while (iter.hasNext()) {
-                ACLMessage queuedMessage = iter.next();
-                Serializable contentObject = queuedMessage.getContentObject();
-                if (contentObject instanceof MicrogridGraphMessage) {
-                    graphMessages.add(queuedMessage);
-                }
-            }
-            jadeMessageSendQueue.clear();
-            jadeMessageSendQueue.addAll(graphMessages);
-            if (!jadeMessageSendQueue.offer(msg)) {
+//            Collection<ACLMessage> graphMessages = new HashSet<ACLMessage>();
+//            Iterator<ACLMessage> iter = jadeMessageSendQueue.iterator();
+//            while (iter.hasNext()) {
+//                ACLMessage queuedMessage = iter.next();
+//                Serializable contentObject = queuedMessage.getContentObject();
+//                if (contentObject instanceof MicrogridGraphMessage) {
+//                    graphMessages.add(queuedMessage);
+//                }
+//            }
+//            jadeMessageSendQueue.clear();
+//            jadeMessageSendQueue.addAll(graphMessages);
+//            if (!jadeMessageSendQueue.offer(msg)) {
                 jadeMessageSendQueue.clear();
                 jadeMessageSendQueue.add(msg);
-            }
+//            }
         }
     }
 
