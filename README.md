@@ -30,7 +30,21 @@ Data is represented as Plain Old Java Objects (POJO) and sents as externalized b
 
 ![Data Flow](docs/screenshots/simplifiedDataFlow.png)
 
-### Imple
+### Implementation
+Each level of the data flow runs separately. Somewhere, in another repository, there is code that runs on the hardware controller. It sends data via Serial. The agent `MicrogridControllerSenderAgent` uses the package `comporthandler2` to read this data from serial, convert it to a Java object, externalize it, and send via a JADE message to the `MicrogridReceiverAgent`. The receiver agent reads the object and updates its internal state map of the power grid. Every second, the receiver agent sends its grid state via Socket.IO to the browser. The browser uses Javascript and the Library `Vis.js` to render the power grid in a current state.
+
+Thus, to run the full system, you need a hardware controller, a sender PC, and a receiver PC.
+#### Steps to Run (some may be omitted if using dummies for testing)
+1. For each PC, follow the installation instructions below.
+1. Run `MicrogridReceiverAgent` on a dedicated receiver PC.
+1. Open `src/resources/frontend/index.html` on the receiver PC.
+2. Update `MicrogridControllerSenderAgent` to point its AID at the dedicated receiver PC.
+3. Run the hardware controller, and connect it to the dedicated sender PC.
+4. Ensure that `MicrogridControllerSenderAgent` is reading from the correct comport associated with the controller.
+5. Start `MicrogridControllerSenderAgent` on the sender PC.
+6. Assuming there are no errors, within 30 seconds, data will appear in the browser on the reciever PC.
+
+Many dummy classes are included so that this system can be tested on a single PC. Dummy sender agents send dummy data so that we can test without a real controller or separate sender pc.
 
 ## Prerequisites
 1. You will need Administrator-level access to a computer
