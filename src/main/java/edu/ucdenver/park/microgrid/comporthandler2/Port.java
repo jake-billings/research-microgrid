@@ -25,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author Amine Sasse
  * @author (modified by) Jake Billings
+ * @author (modified by) Bhanu Babaiahgari
  */
 public class Port implements SerialPortEventListener{
     SerialPort port;

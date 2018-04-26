@@ -8,6 +8,7 @@ package edu.ucdenver.park.microgrid.comporthandler2;
  * event listener
  *
  * event handler interface for handling when the receive buffer contains enough data to read a packet
+ *  modification from original: documentation added
  *
  * @author Amine Sasse
  * @author (modified by) Jake Billings

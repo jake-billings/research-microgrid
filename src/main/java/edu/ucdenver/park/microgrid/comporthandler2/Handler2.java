@@ -19,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author Amine Sasse
  * @author (modified by) Jake Billings
+ * @author (modified by) Bhanu Babaiahgari
  */
 public class Handler2 implements BufferReadyEvent {
     private Set<ControllerDataListener> dataListeners = new HashSet<ControllerDataListener>();
