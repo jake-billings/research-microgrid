@@ -15,6 +15,8 @@ Each data structure is abstracted in the "abs" package such that the code could 
 2. Sent via JADE to Receiver Agent
 3. Sent from Receiver Agent to Frontend Client via Socket.io
 
+See `docs/Spec.docx` for more documentation/explanation of the communication protocol. It is important to understand the architecture before working on this repository.
+
 ![JUnit Run Config](docs/screenshots/simplifiedDataFlow.png)
 
 ## Prerequisites
@@ -84,3 +86,4 @@ The scrolling graph may eventually look like this oscilloscope.
 
 ## Issues
 1. Inherited issue from netty: we use a library to run a socket.io connection to a web browser. This library relies on netty. In Java 9, the keyword "native" is reserved. This breaks behavior in netty. Until netty is fixed, we must use JDK 1.8 instead of 1.9.
+2. McAffee Firewall blocks JADE by default. I encountered this issue in the lab. Somebody installed McAffee security software on the lab computer. None of my JADE messages were getting through, and code changes didn't help. I saw connection timeout errors. Disabling the McAffee firewall fixed the issue.
