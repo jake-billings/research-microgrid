@@ -3,21 +3,28 @@ package edu.ucdenver.park.microgrid.comporthandler2;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-
-/*
-    How to use.
-
-    This class was made specifically to create and extract info from packets.
-    It was also made specifically with the idea that the packets would be 8 bytes and contain the following:
-
-    ENQ(1 byte) TO(2 bytes) FROM(2 bytes) Number(2 byte, 0-FF) EOT(1 byte)
-
-    In order to accept different packets you will need to modify this class and modify the handling of the packet
-    in the BufferReady() function in the Handler Class.
-
-*/
-
-
+/**
+ * Packet
+ *
+ * class
+ *
+ * represents one packet sent from the hardware controller, read via serial, and received by this application
+ *  one packet contains one data point
+ *
+ * modified from original comporthandler package
+ *  added class documentation similar to the rest of the repositoryHow to use.
+ *
+ * This class was made specifically to create and extract info from packets.
+ * It was also made specifically with the idea that the packets would be 8 bytes and contain the following:
+ *
+ * ENQ(1 byte) TO(2 bytes) FROM(2 bytes) Number(2 byte, 0-FF) EOT(1 byte)
+ *
+ * In order to accept different packets you will need to modify this class and modify the handling of the packet
+ * in the BufferReady() function in the Handler Class.
+ *
+ * @author Amine Sasse
+ * @author (modified by) Jake Billings
+ */
 public class Packet {
     byte header;
     short to;

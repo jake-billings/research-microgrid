@@ -5,6 +5,21 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Handler2
+ *
+ * class
+ *
+ * the class manages listening for data from the communication port/serial bus, parsing packets received, and
+ *  passing the received data on to registered listeners
+ *
+ * modified from the original comporthandler package
+ *  modification includes formatting, access modifiers, and the addition of an event handler/listener registration for
+ *  when data is received
+ *
+ * @author Amine Sasse
+ * @author (modified by) Jake Billings
+ */
 public class Handler2 implements BufferReadyEvent {
     private Set<ControllerDataListener> dataListeners = new HashSet<ControllerDataListener>();
 

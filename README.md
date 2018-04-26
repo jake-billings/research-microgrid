@@ -8,16 +8,29 @@ I approached the problem as event-driven graph data. The power control/monitorin
 
 Each data structure is abstracted in the "abs" package such that the code could theoretically be reused for an entirely different purpose. See `Graph` and `MicrogridGraph`.
 
+## Contributors
+Each class in this repository is assigned a "primary" author via the `@author` annotation in the class documentation. This primary author should have his/her first and last name listed in the class documentation first. The primary author should be the "person to ask" about the class. If you have questions about a class, this is the person to contact. Other contributors should be listed later in the author list. Contributors should leave contact information here in the README so that future contributors can find it.
+
+|Name          | Primary Contribution                     | Contact Information |
+|--------------|------------------------------------------|---------------------|
+|Amine Sasse   | `comporthandler` package                 |                     |
+|Jake Billings | `agents,core,data,live,message` packages | [jake.billings@ucdenver.edu](mailto:jake.billings@ucdenver.edu), [billij@rpi.edu](billij@rpi.edu), [jake@jakebillings.com](jake@jakebillings.com) |
+
 ## Architecture
 ### Data Flow
 1. Measured by Sender Agent, which interfaces with control hardware
 ![Hardware](docs/screenshots/hardware.jpg)
-2. Sent via JADE to Receiver Agent
-3. Sent from Receiver Agent to Frontend Client via Socket.io
+1. Sent via JADE INFORM to Receiver Agent
+1. State stored in Receiver agent
+1. Ticker event sends state from Receiver Agent to Frontend Client via Socket.io
 
 See `docs/Spec.docx` for more documentation/explanation of the communication protocol. It is important to understand the architecture before working on this repository.
 
-![JUnit Run Config](docs/screenshots/simplifiedDataFlow.png)
+Data is represented as Plain Old Java Objects (POJO) and sents as externalized bytes (using interface `Externalizable` stored in JADE ACLMessages).
+
+![Data Flow](docs/screenshots/simplifiedDataFlow.png)
+
+### Imple
 
 ## Prerequisites
 1. You will need Administrator-level access to a computer

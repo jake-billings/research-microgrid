@@ -8,17 +8,24 @@ import jssc.SerialPortException;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-
-/*
-  The jssc "Java Simple Serial Connector" library was utilized to open up Ports, Send data and receive data.
-  It was written by scream3r and can be found here https://github.com/scream3r/java-simple-serial-connector
-*/
-
-/*
-  How to use.
-  Overall, this Port object should not be touched or modified.
-*/
-
+/**
+ * Port
+ *
+ * class
+ *
+ * represents a serial port/bus and listens for events from it
+ *
+ * modified from original comporthandler package
+ *  added class documentation similar to the rest of the repository
+ *
+ * The jssc "Java Simple Serial Connector" library was utilized to open up Ports, Send data and receive data.
+ * It was written by scream3r and can be found here https://github.com/scream3r/java-simple-serial-connector
+ * How to use:
+ * Overall, this Port object should not be touched or modified.
+ *
+ * @author Amine Sasse
+ * @author (modified by) Jake Billings
+ */
 public class Port implements SerialPortEventListener{
     SerialPort port;
     ArrayList<BufferReadyEvent> listenerList;
