@@ -5,6 +5,22 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Handler2
+ *
+ * class
+ *
+ * the class manages listening for data from the communication port/serial bus, parsing packets received, and
+ *  passing the received data on to registered listeners
+ *
+ * modified from the original comporthandler package
+ *  modification includes formatting, access modifiers, and the addition of an event handler/listener registration for
+ *  when data is received
+ *
+ * @author Amine Sasse
+ * @author (modified by) Jake Billings
+ * @author (modified by) Bhanu Babaiahgari
+ */
 public class Handler2 implements BufferReadyEvent {
     private Set<ControllerDataListener> dataListeners = new HashSet<ControllerDataListener>();
 
@@ -43,7 +59,7 @@ public class Handler2 implements BufferReadyEvent {
      * sends a packet via the comm port requesting for the controller to send us more data
      */
     public void sendDataRequestPacket() {
-        packet = new Packet((byte) 5, (short) 2, (short) 1, (short) data);
+        packet = new Packet((byte) 5, (byte) 2, (byte) 0, (byte) 1, (short) data);
         port.sendPacket(packet.make());
     }
 
@@ -78,11 +94,12 @@ public class Handler2 implements BufferReadyEvent {
     */
     public void BufferReady() {
         if (!buffer.isEmpty()) {
+            System.out.println("Handler got data");
             Packet input = (Packet) buffer.remove();
             if (input.header == 6) { //Acknowledgment packet
                 port.setCan(false);
             } else if (input.header == 5) { //Enquiry packet
-                packet = new Packet((byte) 6, input.from, input.to, input.data);
+                packet = new Packet(input.header, input.from, input.id, input.type, input.data);
                 port.sendPacket(packet.make());
                 data = input.data;
                 this.fireControllerDataEvent(data);

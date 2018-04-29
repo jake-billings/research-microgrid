@@ -8,17 +8,25 @@ import jssc.SerialPortException;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
-
-/*
-  The jssc "Java Simple Serial Connector" library was utilized to open up Ports, Send data and receive data.
-  It was written by scream3r and can be found here https://github.com/scream3r/java-simple-serial-connector
-*/
-
-/*
-  How to use.
-  Overall, this Port object should not be touched or modified.
-*/
-
+/**
+ * Port
+ *
+ * class
+ *
+ * represents a serial port/bus and listens for events from it
+ *
+ * modified from original comporthandler package
+ *  added class documentation similar to the rest of the repository
+ *
+ * The jssc "Java Simple Serial Connector" library was utilized to open up Ports, Send data and receive data.
+ * It was written by scream3r and can be found here https://github.com/scream3r/java-simple-serial-connector
+ * How to use:
+ * Overall, this Port object should not be touched or modified.
+ *
+ * @author Amine Sasse
+ * @author (modified by) Jake Billings
+ * @author (modified by) Bhanu Babaiahgari
+ */
 public class Port implements SerialPortEventListener{
     SerialPort port;
     ArrayList<BufferReadyEvent> listenerList;
@@ -50,8 +58,8 @@ public class Port implements SerialPortEventListener{
         port = new SerialPort(Port1);
         try {
             port.openPort();
-            port.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-            port.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
+            port.setParams(SerialPort.BAUDRATE_57600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+            port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
             port.addEventListener(this, SerialPort.MASK_RXCHAR);
             port.purgePort(SerialPort.PURGE_RXCLEAR);
             port.purgePort(SerialPort.PURGE_TXCLEAR);

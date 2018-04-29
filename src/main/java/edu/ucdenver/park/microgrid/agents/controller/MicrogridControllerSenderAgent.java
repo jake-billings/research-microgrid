@@ -10,56 +10,119 @@ import jade.core.behaviours.TickerBehaviour;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * MicrogridControllerSenderAgent
+ * <p>
+ * class
+ * <p>
+ * JADE agent
+ * <p>
+ * this is the real sender agent that sends real data from a real controller
+ * <p>
+ * this class interfaces the modified version of Amine's code from the "comporthandler2" package and the Jake's
+ * MicrogridSenderAgent to send real data via JADE.
+ *
+ * @author Jake Billings
+ */
 public class MicrogridControllerSenderAgent extends MicrogridSenderAgent {
+    /**
+     * data
+     * <p>
+     * int
+     * <p>
+     * this is necessary to make the comporthandler library work
+     * in my opinion, it's bad practice; however, I didn't write the code, and I don't want to rewrite it
+     */
     static int data;
+
+    /**
+     * handler
+     * <p>
+     * Handler2
+     * <p>
+     * instance of the handler class from the comporthandler2 package
+     * this is our interface with the hardware controller
+     */
     private Handler2 handler;
 
+    /**
+     * makeReceiverAID()
+     *
+     * @return an AID where a "ReceiverAgent" from the core package is located
+     */
     private static AID makeReceiverAID() {
         AID aid = new AID("ReceiverAgent@10.20.102.203:1100/JADE", AID.ISGUID);
         aid.addAddresses("http://NC2611-PC-16.ucdenver.pvt:7778/acc");
         return aid;
     }
 
+    //Neighborhood One
+    // this is the node that we say we're sending data for
+    private static MicrogridNode g = new MicrogridNode("microgrid-node-controller-generator", MicrogridNodeType.GENERATOR);
+
+    /**
+     * makeMicrogridGraph()
+     *
+     * @return Microgrid graph data representing the physical power grid we are measuring (currently it's a 1 node graph)
+     */
     private static MicrogridGraph makeMicrogridGraph() {
         //Declare two hash sets to hold our nodes and edges
         Set<MicrogridNode> dummyNodes = new HashSet<MicrogridNode>();
         Set<MicrogridEdge> dummyEdges = new HashSet<MicrogridEdge>();
 
-        //Neighborhood One
-        MicrogridNode n1Generator = new MicrogridNode("microgrid-node-n1-generator", MicrogridNodeType.GENERATOR);
-        dummyNodes.add(n1Generator);
-        MicrogridNode n1Battery = new MicrogridNode("microgrid-node-n1-battery", MicrogridNodeType.BATTERY);
-        dummyNodes.add(n1Battery);
-        dummyEdges.add(new MicrogridEdge("microgrid-edge-n1-gb", n1Generator, n1Battery, MicrogridEdgeType.BUS));
+        dummyNodes.add(g);
 
-        //Neighborhood Two
-        MicrogridNode n2Generator = new MicrogridNode("microgrid-node-n2-generator", MicrogridNodeType.GENERATOR);
-        dummyNodes.add(n2Generator);
-        MicrogridNode n2Battery = new MicrogridNode("microgrid-node-n2-battery", MicrogridNodeType.BATTERY);
-        dummyNodes.add(n2Battery);
-        dummyEdges.add(new MicrogridEdge("microgrid-edge-n2-gb", n2Generator, n2Battery, MicrogridEdgeType.BUS));
-
-        //Connect the neighborhood
-        dummyEdges.add(new MicrogridEdge("microgrid-edge-inter-n1-n2", n1Battery, n2Battery, MicrogridEdgeType.BUS));
-
-        return new MicrogridGraph("example-microgrid-sender-subgraph", dummyEdges, dummyNodes);
+        return new MicrogridGraph("microgrid-controller", dummyEdges, dummyNodes);
     }
 
+    /**
+     * makeGridUpdatePeriod()
+     *
+     * @return the time between graph data updates that we send in ms
+     */
     private static long makeGridUpdatePeriod() {
         return 30000;
     }
 
-    public MicrogridControllerSenderAgent() {
-
-        //Call super with the parameters from above
-        super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
-
-        handler = new Handler2("COM1", true, data, 8, 3);
+    /**
+     * makeHandler()
+     * <p>
+     * instantiates a handler, which interfaces between us and the hardware controller
+     * I copied this line of code from Amine, and Bhanu edited it
+     * <p>
+     * I don't have documentation available for how/when to modify the numbers 8 and 3, which
+     * respectively represent "packetSize" and "secs"
+     * <p>
+     * the string arg (comPort) should be the comport the controller is connected to
+     *
+     * @return the handler instance to use
+     */
+    private static Handler2 makeHandler() {
+        return new Handler2("COM3", true, data, 8, 3);
     }
 
+    /**
+     * MicrogridControllerSenderAgent
+     */
+    public MicrogridControllerSenderAgent() {
+        //Call super with the parameters from above
+        super(makeReceiverAID(), makeMicrogridGraph(), makeGridUpdatePeriod());
+        handler = makeHandler();
+    }
+
+    /**
+     * setup()
+     * <p>
+     * method
+     * <p>
+     * called by JADE for agent startup
+     * <p>
+     * this is where we create and register our agent behaviors
+     */
     protected void setup() {
         super.setup();
 
+        //Using a JADE behavior as a timer, query the controller for new data every two seconds
         addBehaviour(new TickerBehaviour(this, 2000) {
             @Override
             protected void onTick() {
@@ -69,9 +132,13 @@ public class MicrogridControllerSenderAgent extends MicrogridSenderAgent {
             }
         });
 
+        //Register with the handler to receive updates whenever we receive data from the controller via the commport
+        // when we do, instantiate a Java object (FloatMicrogridDatum) and send the data to the receiver
         handler.registerControllerDataListener(new ControllerDataListener() {
             public void onControllerData(int data) {
-                System.out.println("data: "+data);
+                //Log the data to the console for easy debugging
+                // todo remove this println statement
+                System.out.println("data: " + data);
 
                 //Don't ever use this method to get nodes in a real agent. Store the important nodes
                 // as instance variables. This is acceptable because this is a dummy and I used DummyMicrogridGraph
