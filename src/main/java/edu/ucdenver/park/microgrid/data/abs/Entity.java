@@ -84,21 +84,17 @@ public abstract class Entity implements Externalizable {
         return Objects.hash(_id);
     }
 
-    /**
-     * get_id()
-     *
-     * getter
-     *
-     * @return _id
-     */
+    //----Getters----
     public String get_id() {
         return _id;
     }
 
+    //----Setters----
     protected void set_id(String _id) {
         this._id = _id;
     }
 
+    //----Externalizers----
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF(this.get_id());
     }

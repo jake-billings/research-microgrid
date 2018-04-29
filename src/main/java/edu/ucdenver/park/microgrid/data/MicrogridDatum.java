@@ -11,7 +11,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 /**
- * Datum
+ * MicrogridDatum
  *
  * abstract class
  *

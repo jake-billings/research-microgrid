@@ -94,6 +94,7 @@ public class FloatMicrogridDatum extends MicrogridDatum {
     private void setValue(float value) {
         this.value = value;
     }
+
     //----Externalizers----
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
