@@ -15,6 +15,7 @@ Each data structure is abstracted in the "abs" package such that the code could 
 2. Sent via JADE to Receiver Agent
 3. Sent from Receiver Agent to Frontend Client via Socket.io
 
+![class diagram](docs/dataPackageClassDiagram.png)
 See `docs/Spec.docx` for more documentation/explanation of the communication protocol. It is important to understand the architecture before working on this repository.
 
 ![JUnit Run Config](docs/screenshots/simplifiedDataFlow.png)
