@@ -1,5 +1,6 @@
-package edu.ucdenver.park.microgrid.data;
+package edu.ucdenver.park.microgrid.test.data;
 
+import edu.ucdenver.park.microgrid.data.*;
 import edu.ucdenver.park.microgrid.data.abs.Edge;
 import edu.ucdenver.park.microgrid.data.abs.Graph;
 import edu.ucdenver.park.microgrid.data.abs.Node;

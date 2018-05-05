@@ -2,8 +2,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE', which is part of this source code package.
  */
-package edu.ucdenver.park.microgrid.data.abs;
+package edu.ucdenver.park.microgrid.test.abs;
 
+import edu.ucdenver.park.microgrid.data.abs.Edge;
+import edu.ucdenver.park.microgrid.data.abs.Graph;
+import edu.ucdenver.park.microgrid.data.abs.Node;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;

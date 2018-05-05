@@ -11,10 +11,10 @@ Each data structure is abstracted in the "abs" package such that the code could 
 ## Contributors
 Each class in this repository is assigned a "primary" author via the `@author` annotation in the class documentation. This primary author should have his/her first and last name listed in the class documentation first. The primary author should be the "person to ask" about the class. If you have questions about a class, this is the person to contact. Other contributors should be listed later in the author list. Contributors should leave contact information here in the README so that future contributors can find it.
 
-|Name          | Primary Contribution                     | Contact Information |
-|--------------|------------------------------------------|---------------------|
-|Amine Sasse   | `comporthandler` package                 |                     |
-|Jake Billings | `agents,core,data,live,message` packages | [jake.billings@ucdenver.edu](mailto:jake.billings@ucdenver.edu), [billij@rpi.edu](billij@rpi.edu), [jake@jakebillings.com](jake@jakebillings.com) |
+|Name          | Primary Contribution                                 | Contact Information |
+|--------------|------------------------------------------------------|---------------------|
+|Amine Sasse   | `comporthandler` package                             |                     |
+|Jake Billings | `agents,core,data,live,message,persistence` packages | [jake.billings@ucdenver.edu](mailto:jake.billings@ucdenver.edu), [billij@rpi.edu](billij@rpi.edu), [jake@jakebillings.com](jake@jakebillings.com) |
 
 ## Architecture
 ### Data Flow
@@ -52,6 +52,7 @@ Many dummy classes are included so that this system can be tested on a single PC
 1. You will need to have cloned this git repository using `git clone`
 1. You will need to have IntelliJ (or be able to translate my instructions from IntelliJ to whatever you're using)
 1. You will need JDK 1.8 (Not JDK <1.8. NOT JDK >=1.9. You need exactly JDK1.8 (See "Issues" section)
+1. You will need a database installed that is compatible with JDBC. The connector for MySQL is already in `pom.xml`, so I recommend MySQL.
 
 ## Setup Javascript Frontend
 1. Install NodeJS
@@ -107,6 +108,10 @@ Many dummy classes are included so that this system can be tested on a single PC
 ![JADE GUI](docs/screenshots/JADEInterfaceWithBothAgents.png)
 
 3e. Run each agent and ensure that it displays appropriately in the JADE GUI
+
+4. Database Setup (Required for Storing Data)
+4a. Configure database address/credentials in config file. The info in `src/main/resources/hibernate.cfg.xml` must match your local db configuration. By default, we connect to a local MySQL server as root with no password.
+4b. Ensure a database called `microgrid` exists in MySQL. To do this, run `mysql` in the terminal to enter the MySQL terminal. Then, run `create database microgrid;` in the MySQL terminal.
 
 ## Goals
 The scrolling graph may eventually look like this oscilloscope.
