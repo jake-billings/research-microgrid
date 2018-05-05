@@ -258,4 +258,8 @@ public class MicrogridReceiverAgent extends Agent {
             server.onMicrogridNodeSnapshots(liveGrid.getCurrentStateForAllNodes());
         }
     }
+
+    protected LiveMicrogridGraph getLiveGrid() {
+        return liveGrid;
+    }
 }

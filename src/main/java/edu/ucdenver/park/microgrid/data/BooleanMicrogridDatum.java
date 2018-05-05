@@ -4,6 +4,7 @@
  */
 package edu.ucdenver.park.microgrid.data;
 
+import javax.persistence.*;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -31,6 +32,8 @@ import java.io.ObjectOutput;
  *
  *  @author Jake Billings
  */
+@Access(AccessType.PROPERTY)
+@Entity
 public class BooleanMicrogridDatum extends MicrogridDatum {
     /**
      * measurementType
@@ -41,6 +44,7 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
      *
      * this is the type of measurement made (e.g. Fault, CircuitBreakerStatus)
      */
+    @Transient
     private MicrogridBooleanMeasurementType measurementType;
 
     /**
@@ -50,6 +54,7 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
      *
      * the actual float reading represented by this datum object
      */
+    @Transient
     private boolean value;
 
     /**
@@ -77,10 +82,21 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
         this.measurementType = measurementType;
     }
 
-    //----Getters----
+    //----DB Property Getters----
+    @Column(name="measurement_type_id")
+    public byte getMeasurementTypeId() {
+        return this.getMeasurementType().get_id();
+    }
+    public void setMeasurementTypeId(byte newId) {
+        this.setMeasurementType(MicrogridBooleanMeasurementType.fromId(newId));
+    }
+    @Column(name = "value")
     public boolean getValue() {
         return value;
     }
+
+    //----Other Getters----
+    @Transient
     public MicrogridBooleanMeasurementType getMeasurementType() {
         return measurementType;
     }

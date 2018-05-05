@@ -4,6 +4,8 @@
  */
 package edu.ucdenver.park.microgrid.data.abs;
 
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -36,6 +38,7 @@ import java.io.ObjectOutput;
  *
  *  @author Jake Billings
  */
+@MappedSuperclass
 public abstract class Datum extends Entity {
     /**
      * timestamp
@@ -44,6 +47,7 @@ public abstract class Datum extends Entity {
      *
      * the number of milliseconds from Jan 1, 1970 when this datum was recorded
      */
+    @Id
     private long timestamp;
 
     /**

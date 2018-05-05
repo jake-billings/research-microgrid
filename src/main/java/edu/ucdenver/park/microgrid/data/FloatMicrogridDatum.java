@@ -4,6 +4,7 @@
  */
 package edu.ucdenver.park.microgrid.data;
 
+import javax.persistence.*;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -31,6 +32,8 @@ import java.io.ObjectOutput;
  *
  *  @author Jake Billings
  */
+@Access(AccessType.PROPERTY)
+@Entity
 public class FloatMicrogridDatum extends MicrogridDatum {
     /**
      * measurementType
@@ -50,6 +53,7 @@ public class FloatMicrogridDatum extends MicrogridDatum {
      *
      * the actual float reading represented by this datum object
      */
+    @Column
     private float value;
 
     /**
@@ -79,12 +83,24 @@ public class FloatMicrogridDatum extends MicrogridDatum {
         this.measurementType = measurementType;
     }
 
-    //----Getters----
-    public MicrogridFloatMeasurementType getMeasurementType() {
-        return measurementType;
+
+    //----DB Property Getters----
+    @Column(name="measurement_type_id")
+    public byte getMeasurementTypeId() {
+        return this.getMeasurementType().get_id();
     }
+    public void setMeasurementTypeId(byte newId) {
+        this.setMeasurementType(MicrogridFloatMeasurementType.fromId(newId));
+    }
+    @Column(name = "value")
     public float getValue() {
         return value;
+    }
+
+    //----Other Getters----
+    @Transient
+    public MicrogridFloatMeasurementType getMeasurementType() {
+        return measurementType;
     }
 
     //----Setters----

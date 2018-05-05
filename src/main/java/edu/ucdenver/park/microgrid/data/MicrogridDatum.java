@@ -6,6 +6,9 @@ package edu.ucdenver.park.microgrid.data;
 
 import edu.ucdenver.park.microgrid.data.abs.Datum;
 
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -36,6 +39,7 @@ import java.io.ObjectOutput;
  *
  *  @author Jake Billings
  */
+@MappedSuperclass
 public abstract class MicrogridDatum extends Datum {
     /**
      * node
@@ -44,6 +48,7 @@ public abstract class MicrogridDatum extends Datum {
      *
      * the node at which this datum was recorded
      */
+    @Transient
     private MicrogridNode node;
 
     /**
@@ -72,6 +77,7 @@ public abstract class MicrogridDatum extends Datum {
     }
 
     //----Getters----
+    @Transient
     public MicrogridNode getNode() {
         return node;
     }

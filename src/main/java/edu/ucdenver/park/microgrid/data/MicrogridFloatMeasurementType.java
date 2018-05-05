@@ -19,14 +19,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum MicrogridFloatMeasurementType {
-    VOLTAGE(1, "Voltage", "Volts", "V", "Potential Difference"),
-    AMPERAGE(2, "Amperage", "Amps", "A", "Current"),
-    WATTAGE(3, "Wattage", "Watts", "W", "Power");
+    VOLTAGE((byte) 1, "Voltage", "Volts", "V", "Potential Difference"),
+    AMPERAGE((byte) 2, "Amperage", "Amps", "A", "Current"),
+    WATTAGE((byte) 3, "Wattage", "Watts", "W", "Power");
 
     /**
      * _id
      *
-     * int
+     * byte
      *
      * number representing the type of edge; will be in the data packet in the JADE transport protocol
      * should be declared in global protocol spec
@@ -38,7 +38,7 @@ public enum MicrogridFloatMeasurementType {
      *
      * Ex: 2
      */
-    private final int _id;
+    private final byte _id;
 
     /**
      * name
@@ -94,7 +94,7 @@ public enum MicrogridFloatMeasurementType {
      * @param unitName the human-readable unit name "Volts"
      * @param unitAbbreviation "V"
      */
-    MicrogridFloatMeasurementType(int _id, String name, String unitName, String unitAbbreviation, String baseUnitType) {
+    MicrogridFloatMeasurementType(byte _id, String name, String unitName, String unitAbbreviation, String baseUnitType) {
         this._id = _id;
         this.name = name;
         this.unitName = unitName;
@@ -122,7 +122,7 @@ public enum MicrogridFloatMeasurementType {
     }
 
     //----Getters----+
-    public int get_id() {
+    public byte get_id() {
         return this._id;
     }
     public String getName() {

@@ -4,6 +4,8 @@
  */
 package edu.ucdenver.park.microgrid.data.abs;
 
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.io.*;
 import java.util.Objects;
 
@@ -22,6 +24,7 @@ import java.util.Objects;
  *
  * @author Jake Billings
  */
+@MappedSuperclass
 public abstract class Entity implements Externalizable {
     /**
      * _id
@@ -30,6 +33,7 @@ public abstract class Entity implements Externalizable {
      *
      * unique string identifier for this entity; must be globally unique; uuid_4 is a good option
      */
+    @Id
     private String _id;
 
     /**

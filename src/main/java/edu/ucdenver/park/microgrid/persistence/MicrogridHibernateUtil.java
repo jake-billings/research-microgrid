@@ -1,5 +1,7 @@
 package edu.ucdenver.park.microgrid.persistence;
 
+import edu.ucdenver.park.microgrid.data.BooleanMicrogridDatum;
+import edu.ucdenver.park.microgrid.data.FloatMicrogridDatum;
 import edu.ucdenver.park.microgrid.dummy.Student;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -42,6 +44,8 @@ public class MicrogridHibernateUtil {
         config.configure("hibernate.cfg.xml");
 
         config.addAnnotatedClass(Student.class);
+        config.addAnnotatedClass(FloatMicrogridDatum.class);
+        config.addAnnotatedClass(BooleanMicrogridDatum.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(config.getProperties()).build();
 
