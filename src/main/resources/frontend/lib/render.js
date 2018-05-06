@@ -8,7 +8,7 @@
  * library: UMD module
  *  UMD: https://github.com/umdjs/umd/blob/master/templates/commonjsStrictGlobal.js
  *
- * the purpose of this file is to render the data received in client.js via a graphics library
+ * the purpose of this file is to render the grid graph data received in client.js via the vis.js graphics library
  *
  * depends on vis.js
  *
@@ -20,14 +20,12 @@
  *
  * we chose to ignore the directed graph data from the server and update the graph with our own
  *  directionality, which is based on current/amperage readings from nodeSnapshots events
- *
- * see render.css
  */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['exports', 'client', 'vis'], function (exports, io) {
-            factory((root.render = exports), io);
+        define(['exports', 'client', 'vis'], function (exports, client, vis) {
+            factory((root.render = exports), client, vis);
         });
     } else if (typeof exports === 'object' && typeof exports.nodeName !== 'string') {
         // CommonJS
@@ -206,40 +204,40 @@
                 // If an edge points away from a node, and the node has negative current, the edge is wrong; flip it
                 // If an edge points towards a node, and the node has positive current, the edge is wrong; flip it
                 edges.forEach(function (edge) {
-                        snapshot.measurements.forEach(function (measurement) {
-                            if (measurement.measurementType.baseUnitType === 'Current') {
-                                if (measurement.value == 0) {
+                    snapshot.measurements.forEach(function (measurement) {
+                        if (measurement.measurementType.baseUnitType === 'Current') {
+                            if (measurement.value == 0) {
+                                edges.update({
+                                    id: edge.id,
+                                    arrows: {
+                                        to: {enabled: false}
+                                    }
+                                });
+                            } else if (edge.from === snapshot._id) {
+                                if (measurement.value < 0) {
                                     edges.update({
                                         id: edge.id,
+                                        to: edge.from,
+                                        from: edge.to,
                                         arrows: {
-                                              to: {enabled: false}
-                                          }
+                                            to: {scaleFactor: 1, enabled: true}
+                                        }
                                     });
-                                } else if (edge.from === snapshot._id) {
-                                            if (measurement.value < 0) {
-                                                edges.update({
-                                                    id: edge.id,
-                                                    to: edge.from,
-                                                    from: edge.to,
-                                                    arrows: {
-                                                        to: {scaleFactor: 1, enabled: true}
-                                                    }
-                                                });
-                                            }
-                                } else if (edge.to === snapshot._id) {
-                                    if (measurement.value > 0) {
-                                        edges.update({
-                                            id: edge.id,
-                                            to: edge.from,
-                                            from: edge.to,
-                                            arrows: {
-                                                  to: {scaleFactor: 1, enabled: true}
-                                              }
-                                        });
-                                    }
                                 }
-                             }
-                         });
+                            } else if (edge.to === snapshot._id) {
+                                if (measurement.value > 0) {
+                                    edges.update({
+                                        id: edge.id,
+                                        to: edge.from,
+                                        from: edge.to,
+                                        arrows: {
+                                            to: {scaleFactor: 1, enabled: true}
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    });
                 });
             });
         });

@@ -1,0 +1,20 @@
+/*
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE', which is part of this source code package.
+ */
+/**
+ * plot.css
+ *
+ * css stylesheet
+ *
+ * this file contains all CSS necessary to properly render content from plot.js
+ */
+div.smoothie-chart-tooltip {
+    background: #444;
+    padding: 1em;
+    margin-top: 20px;
+    font-family: consolas;
+    color: white;
+    font-size: 10px;
+    pointer-events: none;
+}

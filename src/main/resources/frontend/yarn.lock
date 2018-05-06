@@ -150,6 +150,10 @@ safe-buffer@~5.1.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
+smoothie@^1.35.0:
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/smoothie/-/smoothie-1.35.0.tgz#91dff7f22ec770044c7e6a1323a694a4fd96d001"
+
 socket.io-client@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/socket.io-client/-/socket.io-client-2.0.4.tgz#0918a552406dc5e540b380dcd97afc4a64332f8e"

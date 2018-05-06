@@ -5,6 +5,7 @@
     <title>Test</title>
 
     <script src="node_modules/vis/dist/vis-network.min.js"></script>
+    <script src="node_modules/smoothie/smoothie.js"></script>
     <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
     <script type="text/javascript">
         var config = {
@@ -13,12 +14,70 @@
     </script>
     <script src="lib/client.js"></script>
     <script src="lib/render.js"></script>
+    <script src="lib/plot.js"></script>
+
+    <link rel="stylesheet" href="lib/plot.css">
 </head>
 <body>
 
-<div id="grid" style="width:800px;height: 800px;"></div>
+<table style="width:100%" border="1">
+    <tr>
+        <td style="width:800px;">
+            <div id="grid" style="width:800px;height: 800px;"></div>
+        </td>
+        <td style="vertical-align:top">
+            Measurement Id: <input type="text" id="text-plot" style="width:200px" value="microgrid-node-a-g-3">
+            <button onclick="onClickCreatePlot()">Go</button>
+            <div id="plot"></div>
+        </td>
+    </tr>
+</table>
 <script type="text/javascript">
+    //Render the grid-graph data using grid.js
     render.init(document.getElementById('grid'));
+
+    //Store a function to destroy the current plot
+    // this is initialized as an empty function because when the page first loads there is no chart to destroy
+    var destroyPlot = function () {
+    };
+
+    /**
+     * onClickCreatePlot()
+     *
+     * function
+     *
+     * click event handler
+     *
+     * destroys the old plot, empties the plot container div, and creates a new smoothie plot with the input
+     *  from the measurement id textbox
+     */
+    function onClickCreatePlot() {
+        destroyPlot();
+
+        //Get the measurementId we're listening for from the textbox input
+        var measurementId = document.getElementById("text-plot").value;
+
+        //Get a reference to the plot container div. Then, remove all of its existing children as we create a new plot.
+        var plotDiv = document.getElementById('plot');
+        while (plotDiv.firstChild) {
+            plotDiv.removeChild(plotDiv.firstChild);
+        }
+
+        //Create a canvas element on which Smoothie.js will draw our plot
+        var plotCanvas = document.createElement('canvas');
+        plotCanvas.setAttribute("width", 500);
+        plotCanvas.setAttribute("height", 200);
+
+        //Add that canvas to the now empty plot container div
+        plotDiv.appendChild(plotCanvas);
+
+        //Initialize a new plot inside of the plot container that listens for the target measurement type
+        // store the function we get back from plot.init(); the returned function deregisters listeners and destroys the plot
+        destroyPlot = plot.init(plotCanvas, measurementId);
+    }
+
+    //Just "click" the button when the page loads since everybody would do that everytime anyway
+    onClickCreatePlot();
 </script>
 
 </body>

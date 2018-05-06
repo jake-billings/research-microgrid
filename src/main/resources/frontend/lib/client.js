@@ -103,4 +103,22 @@
         //register event listener
         socket.on(eventName, callback);
     };
+
+    /**
+     * removeListener()
+     *
+     * deregister an event handler with the socket client
+     *
+     * @param eventName the name of the event to deregister must be in _validEvents
+     * @param callback a function to call in which the first param is the event data
+     */
+    exports.removeListener = function (eventName, callback) {
+        //validate parameters
+        if (typeof eventName !== 'string') throw new Error('client.js: call to removeListener() requires a string eventName');
+        if (_validEvents.indexOf(eventName) < 0) throw new Error('client.js: call to removeListener() contains an invalid event; no event with that name exists');
+        if (typeof callback !== 'function') throw new Error('client.js: call to removeListener() requires a callback function');
+
+        //deregister event listener
+        socket.removeListener(eventName, callback);
+    };
 }));
