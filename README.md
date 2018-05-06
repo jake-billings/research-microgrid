@@ -1,6 +1,6 @@
 # research-microgrid
 
-![screenshot](docs/screenshots/preliminaryGraphRendering.png)
+![screenshot](docs/screenshots/screenshotRealtimeGraph.png)
 
 This repository contains code written for Dr. Park's microgrid research at University of Colorado Denver. The purpose is to implement a JADE agent that receives near real-time data from a distributed system of power-grid control/monitoring devices. It should store the data in SQL and send it to a GUI that maps the entire system.
 
@@ -149,6 +149,9 @@ All measurements have the field `timestamp`. This is field is the number of mill
 ## Goals
 The scrolling graph may eventually look like this oscilloscope.
 ![oscilloscope](docs/screenshots/oscilloscope.png)
+
+The graph should handle large networks.
+![screenshot](docs/screenshots/preliminaryGraphRendering.png)
 
 ## Issues
 1. Inherited issue from netty: we use a library to run a socket.io connection to a web browser. This library relies on netty. In Java 9, the keyword "native" is reserved. This breaks behavior in netty. Until netty is fixed, we must use JDK 1.8 instead of 1.9.
