@@ -178,7 +178,7 @@
 
                 var update = {
                     id: snapshot._id,
-                    label: snapshot.measurements.reduce(function (label, measurement) {
+                    label: snapshot._id + '\n' + snapshot.measurements.reduce(function (label, measurement) {
                         //By a convention I invented, boolean measurement types will have negative _ids
                         // and floating point ones will have positive _ids
                         // if there are more measurement types or this convention is broken, we
