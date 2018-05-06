@@ -4,6 +4,8 @@
  */
 package edu.ucdenver.park.microgrid.data;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -99,6 +101,7 @@ public class FloatMicrogridDatum extends MicrogridDatum {
 
     //----Other Getters----
     @Transient
+    @JsonInclude
     public MicrogridFloatMeasurementType getMeasurementType() {
         return measurementType;
     }

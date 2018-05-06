@@ -4,6 +4,8 @@
  */
 package edu.ucdenver.park.microgrid.data;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -45,6 +47,7 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
      * this is the type of measurement made (e.g. Fault, CircuitBreakerStatus)
      */
     @Transient
+    @JsonInclude
     private MicrogridBooleanMeasurementType measurementType;
 
     /**
@@ -55,6 +58,7 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
      * the actual float reading represented by this datum object
      */
     @Transient
+    @JsonInclude
     private boolean value;
 
     /**
@@ -97,6 +101,7 @@ public class BooleanMicrogridDatum extends MicrogridDatum {
 
     //----Other Getters----
     @Transient
+    @JsonInclude
     public MicrogridBooleanMeasurementType getMeasurementType() {
         return measurementType;
     }

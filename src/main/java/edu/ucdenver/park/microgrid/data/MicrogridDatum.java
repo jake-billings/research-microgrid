@@ -4,6 +4,7 @@
  */
 package edu.ucdenver.park.microgrid.data;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import edu.ucdenver.park.microgrid.data.abs.Datum;
 
 import javax.persistence.Column;
@@ -49,6 +50,7 @@ public abstract class MicrogridDatum extends Datum {
      * the node at which this datum was recorded
      */
     @Transient
+    @JsonInclude
     private MicrogridNode node;
 
     /**
