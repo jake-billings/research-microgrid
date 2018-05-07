@@ -16,7 +16,7 @@ library(DBI)
 # Connect to the MySQL Database
 # This line may need to be modified based on SQL server setup
 # Additional connectors exist and can be used for other databases
-con <- dbConnect(RMySQL::MySQL(), dbname = "microgrid", username="root", password="", host="localhost")
+con <- dbConnect(RMySQL::MySQL(), dbname = "microgrid", username="microgrid", password="microgrid", host="localhost")
 
 # List the tables available in the database we connected to
 tables <- dbListTables(con)
