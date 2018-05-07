@@ -11,8 +11,8 @@
         <!-- Database Connection Settings -->
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/microgrid?serverTimezone=America/Denver</property>
-        <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.username">microgrid</property>
+        <property name="hibernate.connection.password">microgrid</property>
 
         <property name="hibernate.hbm2ddl.auto">create</property>
 
