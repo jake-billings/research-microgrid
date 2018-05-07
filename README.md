@@ -84,6 +84,7 @@ All measurements have the field `timestamp`. This is field is the number of mill
 1. R supports accessing MySQL directly, so work from the example script `docs/exampleR.R`.
 ![analyzing in R](docs/screenshots/exampleR.png)
 ![analyzing in R](docs/screenshots/exampleRPlot.png)
+![analyzing in R](docs/screenshots/exampleRPlotWindows.png)
 
 ## Prerequisites
 1. You will need Administrator-level access to a computer
