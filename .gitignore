@@ -19,4 +19,11 @@ MTPs-Main-Container.txt
 #Ingore misc. files
 *.log
 
+.DS_Store
+*.aux
+*.log
+*.synctex.gz
+*.swp
 ~$*
+
+docs/writeup.pdf
