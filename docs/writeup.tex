@@ -42,7 +42,27 @@ Since the microgrid is represented in memory as a graph, representing the graph 
 \section{Monitoring}
 Theoritically, this data model could be implemented in any language to monitor any network. In this paper, I explore only the reference implementation.
 
-\subsection{Implementation}
 JADE is used to facilitate system design and communication. There are two types of agents in the reference implementation: Senders (subclasses of MicrogridSenderAgent) and Receivers (subclasses of MicrogridReceiverAgent). Senders accept data from hardware controllers, instantiate Java objects from the data model, and send them to a receiver agent. the MicrogridSenderAgent superclass contains queue management and ACL messaging code. The MicrogridReceiverAgent superclass is a fully-functional receiver agent. It keeps a copy of the most-up-to-date state of the microgrid in its memory and periodically sends snapshots of it an online monitoring tool via a WebSocket interface. DataLoggingMicrogridReceiverAgent demonstrates an agent that logs all data it receives to an SQL database using the Hibernate JPA implementation. Example, Dummy, and Functional agents are included for reference.
+
+\subsection{Hardware}
+\includegraphics[width=\textwidth]{screenshots/hardware.jpg}
+Other researchers on Dr. Park's team have developed hardware devices (controllers) that monitor and control the microgrid locally. They feed data via serial connection to a PC that runs the sebder JADE agent. The Java Simple Serial Connector (JSSC) library is used to facilitate communication between sender agents and controllers.
+
+\subsection{JADE Layer}
+\includegraphics[width=\textwidth]{screenshots/simplifiedDataFlow.png}
+Data is encoded into the data model when it is decoded from the serial bus via JSSC. The JADE sender and receiver agents do not guarantee deliver of data. A blocking queue model is used to drop data if there is not sufficient bandwidth to transmit it. The receiver agent keeps a copy of the current network state in its memory and periodically transmits it vai Socket.io (WebSockets) to the HTML/JavaScript frontend.
+
+\subsection{Frontend Monitoring}
+\includegraphics[width=\textwidth]{screenshots/screenshotRealtimeGraph.png}
+An example HTML/JavaScript frontend is provided with the reference implementation. It receives periodic updates from the receiver agent about the state of the network and displays them to users.
+
+\subsection{Data Logging}
+\includegraphics[width=\textwidth]{screenshots/screenshotSQLExcel.png}
+The DataLoggingMicrogridReceiverAgent class extends the functionality of the normal receiver agent but also logs all received data to a SQL database using the Hibernate JPA implementation. Data can be analyzed using SQL or by exporting to another analysis tool via CSV.
+
+
+\includegraphics[width=\textwidth]{screenshots/screenshotSQLDatagrip5.png}
+
+
 
 \end{document}
