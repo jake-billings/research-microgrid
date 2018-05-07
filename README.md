@@ -47,7 +47,7 @@ Thus, to run the full system, you need a hardware controller, a sender PC, and a
 
 Many dummy classes are included so that this system can be tested on a single PC. Dummy sender agents send dummy data so that we can test without a real controller or separate sender pc.
 
-## Data Analysis
+## Data Analysis (Excel)
 If you use the `DataLoggingReceiverAgent`, all data received by the system will be stored in your local SQL database by the Hibernate JPA implementation. Data can be viewed, processed, filtered, and analyzed using Structured Query Language (SQL). I recommend reading an online tutorial on SQL before attempting to use it to analyze this data.
 
 First, you need an SQL client. There is a command line client built into MySQL. Popular clients include: Microsoft Access, MySQLWorkbench, and DataGrip. I will be using DataGrip since it has an interface similar to that of IntelliJ.
@@ -79,6 +79,11 @@ See `FloatMicrogridMeasurementType.java` and `BooleanMicrogridMeasurementType.ja
 ![analyzing in excel](docs/screenshots/screenshotSQLExcel.png)
 
 All measurements have the field `timestamp`. This is field is the number of milliseconds since January 1st, 1970 12:00am when the measurement was recorded. Subtracting the first timestamp from the rest will normalize this field to the number of ms since data recording started.
+
+## Data Analysis (R)
+1. R supports accessing MySQL directly, so work from the example script `docs/exampleR.R`.
+![analyzing in R](docs/screenshots/exampleR.png)
+![analyzing in R](docs/screenshots/exampleRPlot.png)
 
 ## Prerequisites
 1. You will need Administrator-level access to a computer
