@@ -26,9 +26,21 @@
             <div id="grid" style="width:800px;height: 800px;"></div>
         </td>
         <td style="vertical-align:top">
-            Measurement Id: <input type="text" id="text-plot" style="width:200px" value="microgrid-node-a-g-3">
-            <button onclick="onClickCreatePlot()">Go</button>
-            <div id="plot"></div>
+            <div>
+                Measurement Id: <input type="text" id="text-plot-1" style="width:200px" value="microgrid-node-a-g-1">
+                <button onclick="onClickCreatePlot(1)">Go</button>
+                <div id="plot-1"></div>
+            </div>
+            <div>
+                Measurement Id: <input type="text" id="text-plot-2" style="width:200px" value="microgrid-node-a-g-2">
+                <button onclick="onClickCreatePlot(2)">Go</button>
+                <div id="plot-2"></div>
+            </div>
+            <div>
+                Measurement Id: <input type="text" id="text-plot-3" style="width:200px" value="microgrid-node-a-g-3">
+                <button onclick="onClickCreatePlot(3)">Go</button>
+                <div id="plot-3"></div>
+            </div>
         </td>
     </tr>
 </table>
@@ -38,8 +50,9 @@
 
     //Store a function to destroy the current plot
     // this is initialized as an empty function because when the page first loads there is no chart to destroy
-    var destroyPlot = function () {
+    var noop = function () {
     };
+    var plotDestroyers = {};
 
     /**
      * onClickCreatePlot()
@@ -50,15 +63,18 @@
      *
      * destroys the old plot, empties the plot container div, and creates a new smoothie plot with the input
      *  from the measurement id textbox
+     *
+     *  @param n number the index of the plot to create
      */
-    function onClickCreatePlot() {
-        destroyPlot();
+    function onClickCreatePlot(n) {
+        //Execute the registered plot destroyer for index n or the empty function (noop)
+        (plotDestroyers[n] || noop)();
 
         //Get the measurementId we're listening for from the textbox input
-        var measurementId = document.getElementById("text-plot").value;
+        var measurementId = document.getElementById('text-plot-' + n).value;
 
         //Get a reference to the plot container div. Then, remove all of its existing children as we create a new plot.
-        var plotDiv = document.getElementById('plot');
+        var plotDiv = document.getElementById('plot-' + n);
         while (plotDiv.firstChild) {
             plotDiv.removeChild(plotDiv.firstChild);
         }
@@ -73,11 +89,13 @@
 
         //Initialize a new plot inside of the plot container that listens for the target measurement type
         // store the function we get back from plot.init(); the returned function deregisters listeners and destroys the plot
-        destroyPlot = plot.init(plotCanvas, measurementId);
+        plotDestroyers[n] = plot.init(plotCanvas, measurementId);
     }
 
     //Just "click" the button when the page loads since everybody would do that everytime anyway
-    onClickCreatePlot();
+    onClickCreatePlot(1);
+    onClickCreatePlot(2);
+    onClickCreatePlot(3);
 </script>
 
 </body>
