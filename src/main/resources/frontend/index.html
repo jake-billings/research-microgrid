@@ -15,6 +15,7 @@
     <script src="lib/client.js"></script>
     <script src="lib/render.js"></script>
     <script src="lib/plot.js"></script>
+    <script src="lib/measurementDropdown.js"></script>
 
     <link rel="stylesheet" href="lib/plot.css">
 </head>
@@ -27,17 +28,17 @@
         </td>
         <td style="vertical-align:top">
             <div>
-                Measurement Id: <input type="text" id="text-plot-1" style="width:200px" value="microgrid-node-a-g-1">
+                Measurement Id: <span id="measurement-dropdown-target-1"></span>
                 <button onclick="onClickCreatePlot(1)">Go</button>
                 <div id="plot-1"></div>
             </div>
             <div>
-                Measurement Id: <input type="text" id="text-plot-2" style="width:200px" value="microgrid-node-a-g-2">
+                Measurement Id: <span id="measurement-dropdown-target-2"></span>
                 <button onclick="onClickCreatePlot(2)">Go</button>
                 <div id="plot-2"></div>
             </div>
             <div>
-                Measurement Id: <input type="text" id="text-plot-3" style="width:200px" value="microgrid-node-a-g-3">
+                Measurement Id: <span id="measurement-dropdown-target-3"></span>
                 <button onclick="onClickCreatePlot(3)">Go</button>
                 <div id="plot-3"></div>
             </div>
@@ -71,7 +72,7 @@
         (plotDestroyers[n] || noop)();
 
         //Get the measurementId we're listening for from the textbox input
-        var measurementId = document.getElementById('text-plot-' + n).value;
+        var measurementId = document.getElementById('measurement-dropdown-target-' + n).firstChild.value;
 
         //Get a reference to the plot container div. Then, remove all of its existing children as we create a new plot.
         var plotDiv = document.getElementById('plot-' + n);
@@ -92,10 +93,9 @@
         plotDestroyers[n] = plot.init(plotCanvas, measurementId);
     }
 
-    //Just "click" the button when the page loads since everybody would do that everytime anyway
-    onClickCreatePlot(1);
-    onClickCreatePlot(2);
-    onClickCreatePlot(3);
+    measurementDropdown.init(document.getElementById('measurement-dropdown-target-1'));
+    measurementDropdown.init(document.getElementById('measurement-dropdown-target-2'));
+    measurementDropdown.init(document.getElementById('measurement-dropdown-target-3'));
 </script>
 
 </body>
