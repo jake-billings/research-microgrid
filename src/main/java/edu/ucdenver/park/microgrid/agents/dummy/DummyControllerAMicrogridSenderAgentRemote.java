@@ -30,7 +30,7 @@ public class DummyControllerAMicrogridSenderAgentRemote extends MicrogridSenderA
      * @return an AID pointing to the agent that will receive the data we send
      */
     private static AID makeReceiverAID() {
-        AID aid = new AID("ReceiverAgent@10.20.102.203:1100/JADE", AID.ISGUID);
+        AID aid = new AID("ReceiverAgent@10.20.102.104:1100/JADE", AID.ISGUID);
         aid.addAddresses("http://NC2611-PC-16.ucdenver.pvt:7778/acc");
         return aid;
     }
